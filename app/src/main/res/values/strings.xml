@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Beach Weather</string>
+    <string name="action_settings">action_settings</string>
+    <string name="detail">detail</string>
+    <string name="logo_text">BeWEATHER</string>
+
+    <color name="splash_back">#FFE103</color>
+    <color name="logotext_color">#FE2269</color>
+</resources>
