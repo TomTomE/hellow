@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
             "만리포해수욕장",
             "광안리해수욕장",
             "대천해수욕장"
+
     };
 
     Integer[] imageId = {
