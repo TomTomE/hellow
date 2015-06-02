@@ -21,6 +21,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     public String[] beachlist = {
+
             "해운대해수욕장",
             "경포대해수욕장",
             "중문해수욕장",
