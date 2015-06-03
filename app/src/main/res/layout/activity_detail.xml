@@ -36,6 +36,8 @@
             android:textSize="25dip"
             android:layout_marginTop="5dip"
             android:paddingLeft="20dip"
-            android:paddingTop="13dip"/>
+            android:paddingTop="13dip"
+
+            />
     </LinearLayout>
 </LinearLayout>
