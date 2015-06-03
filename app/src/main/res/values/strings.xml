@@ -4,6 +4,7 @@
     <string name="detail">detail</string>
     <string name="logo_text">BeWEATHER</string>
 
-    <color name="splash_back">#FFE103</color>
-    <color name="logotext_color">#FE2269</color>
+    <color name="splash_back">#9DF4E3</color>
+    <color name="logotext_color">#FFFFFF</color>
+    <color name="divider_color">#D4D4D4</color>
 </resources>
