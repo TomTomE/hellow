@@ -1,26 +1,15 @@
 package com.example.hyukmin.hellow;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,43 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 
 
-public class MainActivity extends Activity {
-
-    public String[] beachlist = {
-            "해운대해수욕장",
-            "경포대해수욕장",
-            "중문해수욕장",
-            "격포해수욕장",
-            "만리포해수욕장",
-            "광안리해수욕장",
-            "대천해수욕장",
-            "해운대해수욕장",
-            "경포대해수욕장",
-            "중문해수욕장",
-            "격포해수욕장",
-            "만리포해수욕장",
-            "광안리해수욕장",
-            "대천해수욕장",
-            "해운대해수욕장",
-            "경포대해수욕장",
-            "중문해수욕장",
-            "격포해수욕장",
-            "만리포해수욕장",
-            "광안리해수욕장",
-            "대천해수욕장"
-    };
-
+public class MainActivity extends BaseActivity {
     Integer[] imageId = {
             R.drawable.image1,
             R.drawable.image2,
@@ -102,8 +59,11 @@ public class MainActivity extends Activity {
         // 키보드가 바로 뜨는 것을 방지
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        ImageView downloadButton;
-        downloadButton = (ImageView) findViewById(R.id.search_icon);
+        EditText searchBeach = (EditText) findViewById(R.id.search_beach);
+        ImageView downloadButton = (ImageView) findViewById(R.id.search_icon);
+
+        new GetBeachList().execute();
+
 
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,21 +90,20 @@ public class MainActivity extends Activity {
 					mTextView.setText(e.getMessage());
 				}
                 */
-
-                new GetBeachList().execute();
             }
         });
 
-        CustomAdapter adapter = new CustomAdapter(MainActivity.this, beachlist, imageId);
-        ListView list=(ListView)findViewById(R.id.beach_LV);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
-            }
-        });
+//        CustomAdapter adapter = new CustomAdapter(MainActivity.this, beachlist, imageId);
+//        ListView list=(ListView)findViewById(R.id.beach_LV);
+//        list.setAdapter(adapter);
+//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         // 해수욕장 리스트 동적 생성(임시리스트)
         /*
@@ -189,7 +148,19 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class GetBeachList extends AsyncTask<Void, Void, JSONObject> {
+
+    private class GetBeachList extends AsyncTask<Void, Void, JSONArray> {
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param jsonArray The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
 
         /**
          * Override this method to perform a computation on a background thread. The
@@ -206,24 +177,54 @@ public class MainActivity extends Activity {
          * @see #publishProgress
          */
         @Override
-        protected JSONObject doInBackground(Void... params) {
-            JSONObject _json = new JSONObject();
+        protected JSONArray doInBackground(Void... params) {
+            JSONArray jsonData = new JSONArray();
             try {
-                _json = loadBeachList();
-                return _json;
-            } catch (IOException e) {
-                return _json;
-            } catch (JSONException e) {
-                Log.d(DEBUG_TAG, "The msg is : " + e.getMessage());
+                jsonData = loadBeachList();
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
             }
-            return _json;
+            return jsonData;
         }
 
-        private JSONObject loadBeachList() throws IOException, JSONException {
-            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/beach/속초";
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param jsonArray The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(JSONArray jsonArray) {
+            super.onPostExecute(jsonArray);
+
+            String[] baechList = new String[jsonArray.length()];
+            JSONObject tmp =null;
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    baechList[i] = (String) jsonArray.getJSONObject(i).get("_name");
+                    Log.d(DEBUG_TAG, "BeachList  : " + baechList[i]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            CustomAdapter adapter = new CustomAdapter(MainActivity.this, baechList, imageId);
+            ListView list=(ListView)findViewById(R.id.beach_LV);
+            list.setAdapter(adapter);
+        }
+
+        private JSONArray loadBeachList() throws IOException, JSONException {
+            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/list";
 
             String result = GetHttpResponseString(strUrl, false, null);
-            return new JSONObject(result);
+
+            Log.d(DEBUG_TAG, "String result : " + result);
+            return new JSONArray(result);
             /*
             InputStream is = null;
             ByteArrayOutputStream baos;
@@ -276,58 +277,6 @@ public class MainActivity extends Activity {
             }
             return respJSON;
             */
-        }
-
-        public String GetHttpResponseString(String location, Boolean is_post, String form_values) {
-            String result = "";
-            String input_line = null;
-
-            try
-            {
-                InputStream stream = GetHttpResponseStream(location, is_post, form_values);
-                InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
-                BufferedReader buffer = new BufferedReader(reader);
-
-                while ((input_line = buffer.readLine()) != null) {
-                    result += input_line + "/n";
-                }
-                buffer.close();
-                reader.close();
-                stream.close();
-
-                return result;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            return null;
-
-        }
-
-        public InputStream GetHttpResponseStream(String location, Boolean is_post, String form_values) {
-            InputStream stream = null;
-
-            try {
-                URL url = new URL(location);
-
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod(is_post ? "POST" : "GET");
-                connection.setRequestProperty("Accept", "application/json");
-                connection.setUseCaches(false);
-                if (form_values != null) {
-                    Log.d("BaseActivity", form_values);
-                    connection.setDoOutput(true);
-                    OutputStream os = connection.getOutputStream();
-                    os.write(form_values.getBytes("utf-8"));
-                    os.flush();
-                    os.close();
-                }
-                stream = connection.getInputStream();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return stream;
         }
     }
 }

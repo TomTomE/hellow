@@ -32,7 +32,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.beach_list_img);
 
         txtTitle.setText(beachlist[position]);
-        imageView.setImageResource(imageId[position]);
+        imageView.setImageResource(imageId[1]);
         return rowView;
     }
 }
