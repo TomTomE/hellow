@@ -2,20 +2,14 @@ package com.example.hyukmin.hellow;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
@@ -42,6 +36,7 @@ public class MainActivity extends Activity {
             "만리포해수욕장",
             "광안리해수욕장",
             "대천해수욕장"
+
     };
 
     Integer[] imageId = {
@@ -77,14 +72,18 @@ public class MainActivity extends Activity {
         // 키보드가 바로 뜨는 것을 방지
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        CustomAdapter adapter = new CustomAdapter(MainActivity.this, beachlist, imageId);
+        ListviewAdapter adapter = new ListviewAdapter(MainActivity.this, beachlist, imageId);
         ListView list=(ListView)findViewById(R.id.beach_LV);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
+                Intent in = new Intent(MainActivity.this,DetailActivity.class);
+                in.putExtra("id", position);
+                startActivity(in);
+                //finish();
             }
         });
 

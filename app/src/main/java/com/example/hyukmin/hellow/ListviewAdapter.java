@@ -11,12 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomAdapter extends ArrayAdapter<String> {
+public class ListviewAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] beachlist;
     private final Integer[] imageId;
-    public CustomAdapter(Activity context, String[] beachlist, Integer[] imageId) {
+    public ListviewAdapter(Activity context, String[] beachlist, Integer[] imageId) {
         super(context, R.layout.beach_list, beachlist);
         this.context = context;
         this.beachlist = beachlist;
