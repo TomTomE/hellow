@@ -67,26 +67,11 @@ public class MainActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         EditText searchBeach = (EditText) findViewById(R.id.search_beach);
-        ImageView downloadButton = (ImageView) findViewById(R.id.search_icon);
         
-        ListviewAdapter adapter = new ListviewAdapter(MainActivity.this, beachlist, imageId);
-        ListView list=(ListView)findViewById(R.id.beach_LV);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
 
         new GetBeachList().execute();
 
-
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
-                Intent in = new Intent(MainActivity.this,DetailActivity.class);
-                in.putExtra("id", position);
-                startActivity(in);
-                //finish();
-            }
-        });
         searchBeach.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -189,10 +174,21 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setListBy(String[] strArr) {
-        CustomAdapter adapter = new CustomAdapter(MainActivity.this, strArr, imageId);
+        ListviewAdapter adapter = new ListviewAdapter(MainActivity.this, strArr, imageId);
 
-        ListView list = (ListView) findViewById(R.id.beach_LV);
+        ListView list=(ListView)findViewById(R.id.beach_LV);
         list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
+                Intent in = new Intent(MainActivity.this, DetailActivity.class);
+                in.putExtra("id", position);
+                startActivity(in);
+                //finish();
+            }
+        });
     }
 
     //TODO 서버 통신체크, 그에따른 액션 집어넣기.
