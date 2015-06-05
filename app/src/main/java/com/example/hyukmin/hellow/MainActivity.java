@@ -2,7 +2,10 @@ package com.example.hyukmin.hellow;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +50,9 @@ public class MainActivity extends BaseActivity {
 
     };
 
-    private static final String DEBUG_TAG = "HTTP - Beach List";
+    private static final String DEBUG_TAG_HTTP = "HTTP - Beach List";
+    private static final String DEBUG_TAG_SEARCH = "Search - Beach List";
+
     private static final String SERVER_IP = "14.50.109.225";
     private static final String SERVER_PORT = "9000";
 
@@ -92,7 +97,52 @@ public class MainActivity extends BaseActivity {
                 */
             }
         });
+        searchBeach.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d(DEBUG_TAG_SEARCH, "CharSequence : " + s);
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+//        searchBeach.setOnKeyListener(new View.OnKeyListener() {
+//
+//            /**
+//             * Called when a hardware key is dispatched to a view. This allows listeners to
+//             * get a chance to respond before the target view.
+//             * <p>Key presses in software keyboards will generally NOT trigger this method,
+//             * although some may elect to do so in some situations. Do not assume a
+//             * software input method has to be key-based; even if it is, it may use key presses
+//             * in a different way than you expect, so there is no way to reliably catch soft
+//             * input key presses.
+//             *
+//             * @param v       The view the key has been dispatched to.
+//             * @param keyCode The code for the physical key that was pressed
+//             * @param event   The KeyEvent object containing full information about
+//             *                the event.
+//             * @return True if the listener has consumed the event, false otherwise.
+//             */
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                Log.d(DEBUG_TAG_SEARCH, "Key pressed");
+//                if (event.getAction() == KeyEvent.ACTION_UP) {
+//                    Log.d(DEBUG_TAG_SEARCH, "Keycode is : " + keyCode);
+//                }
+//                return false;
+//            }
+//
+//        });
 
 //        CustomAdapter adapter = new CustomAdapter(MainActivity.this, beachlist, imageId);
 //        ListView list=(ListView)findViewById(R.id.beach_LV);
@@ -148,8 +198,16 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void setListBy(String[] strArr) {
+        CustomAdapter adapter = new CustomAdapter(MainActivity.this, strArr, imageId);
 
-    private class GetBeachList extends AsyncTask<Void, Void, JSONArray> {
+        ListView list = (ListView) findViewById(R.id.beach_LV);
+        list.setAdapter(adapter);
+    }
+
+    //TODO 서버 통신체크, 그에따른 액션 집어넣기.
+
+    private class GetBeachList extends AsyncTask<String, Void, JSONArray> {
         /**
          * <p>Runs on the UI thread after {@link #doInBackground}. The
          * specified result is the value returned by {@link #doInBackground}.</p>
@@ -177,14 +235,25 @@ public class MainActivity extends BaseActivity {
          * @see #publishProgress
          */
         @Override
-        protected JSONArray doInBackground(Void... params) {
+        protected JSONArray doInBackground(String... params) {
+            //TODO params 안들어올경우 어떻게 되는지 확인.
             JSONArray jsonData = new JSONArray();
-            try {
-                jsonData = loadBeachList();
-            } catch (JSONException | IOException e) {
-                e.printStackTrace();
+            if(params != null) {
+                try {
+                    jsonData = loadBeachList();
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+                return jsonData;
+            } else {
+                try {
+                    jsonData = loadBeachList();
+                } catch (JSONException | IOException e) {
+                    e.printStackTrace();
+                }
+                return jsonData;
             }
-            return jsonData;
+
         }
 
         /**
@@ -207,23 +276,20 @@ public class MainActivity extends BaseActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
                     baechList[i] = (String) jsonArray.getJSONObject(i).get("_name");
-                    Log.d(DEBUG_TAG, "BeachList  : " + baechList[i]);
+                    Log.d(DEBUG_TAG_HTTP, "BeachList  : " + baechList[i]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
-            CustomAdapter adapter = new CustomAdapter(MainActivity.this, baechList, imageId);
-            ListView list=(ListView)findViewById(R.id.beach_LV);
-            list.setAdapter(adapter);
+            setListBy(baechList);
         }
 
-        private JSONArray loadBeachList() throws IOException, JSONException {
+        private JSONArray loadBeachList(String... param) throws IOException, JSONException {
             String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/list";
 
             String result = GetHttpResponseString(strUrl, false, null);
 
-            Log.d(DEBUG_TAG, "String result : " + result);
+            Log.d(DEBUG_TAG_HTTP, "String result : " + result);
             return new JSONArray(result);
             /*
             InputStream is = null;
@@ -245,7 +311,7 @@ public class MainActivity extends BaseActivity {
                 conn.connect();
 
                 int resp = conn.getResponseCode();
-                Log.d(DEBUG_TAG, "The response is : " + resp);
+                Log.d(DEBUG_TAG_HTTP, "The response is : " + resp);
                 //is = conn.getInputStream();
                 //reader = new InputStreamReader(is, "UTF-8");
                 //char[] buff = new char[length];
@@ -266,9 +332,9 @@ public class MainActivity extends BaseActivity {
                 response = new String(byteData);
                 respJSON  = new JSONObject(response);
 
-                Log.i(DEBUG_TAG, "DATA response = " + response);
+                Log.i(DEBUG_TAG_HTTP, "DATA response = " + response);
             } catch (JSONException e) {
-                Log.d(DEBUG_TAG, "The msg is : " + e.getMessage());
+                Log.d(DEBUG_TAG_HTTP, "The msg is : " + e.getMessage());
             }
             finally {
                 if (is != null) {
@@ -279,4 +345,5 @@ public class MainActivity extends BaseActivity {
             */
         }
     }
+
 }
