@@ -1,11 +1,14 @@
 package com.example.hyukmin.hellow;
 
 import android.os.AsyncTask;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,35 +68,23 @@ public class MainActivity extends BaseActivity {
 
         EditText searchBeach = (EditText) findViewById(R.id.search_beach);
         ImageView downloadButton = (ImageView) findViewById(R.id.search_icon);
+        
+        ListviewAdapter adapter = new ListviewAdapter(MainActivity.this, beachlist, imageId);
+        ListView list=(ListView)findViewById(R.id.beach_LV);
+        list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
         new GetBeachList().execute();
 
 
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                /*
-
-                //TODO ConnectivityManager 사용법 예시
-
-                String strUrl = mEditText.getText().toString();
-				try {
-					if (strUrl != null && strUrl.length() > 0) {
-						ConnectivityManager conMgr = (ConnectivityManager)
-								getSystemService(Context.CONNECTIVITY_SERVICE);
-						NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
-						if (netInfo != null && netInfo.isConnected()) {
-							new DownloadWebpageText().execute(strUrl);
-						} else {
-							throw new Exception(getString(R.string.network_error));
-						}
-					} else {
-						throw new Exception(getString(R.string.bad_url));
-					}
-				} catch (Exception e) {
-					mTextView.setText(e.getMessage());
-				}
-                */
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
+                Intent in = new Intent(MainActivity.this,DetailActivity.class);
+                in.putExtra("id", position);
+                startActivity(in);
+                //finish();
             }
         });
         searchBeach.addTextChangedListener(new TextWatcher() {
