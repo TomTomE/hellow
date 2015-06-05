@@ -3,6 +3,9 @@
     <string name="action_settings">action_settings</string>
     <string name="detail">detail</string>
     <string name="logo_text">BeWEATHER</string>
+    <string name="swim">입수가능</string>
+    <string name="noswim">입수불가능</string>
+    <string name="today_weather">맑음</string>
 
     <color name="splash_back">#9DF4E3</color>
     <color name="logotext_color">#FFFFFF</color>
