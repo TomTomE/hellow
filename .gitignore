@@ -6,5 +6,8 @@
 /build
 /captures
 
+.idea/encodings.xml
 .idea/gradle.xml
 Hellow.iml
+
+.idea/dictionaries

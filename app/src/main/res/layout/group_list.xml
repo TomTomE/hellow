@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/logotext_color">
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dip">
         <ImageView
-            android:id="@+id/beach_list_img"
+            android:id="@+id/group_img"
             android:layout_width="45dip"
             android:layout_height="45dip"
             android:layout_margin="5dip"
             android:layout_marginLeft="10dip"/>
         <TextView
-            android:id="@+id/beach_list_text"
+            android:id="@+id/group_name"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="left"
             android:textSize="25dip"
             android:layout_marginTop="5dip"
             android:paddingLeft="20dip"
