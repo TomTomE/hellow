@@ -1,13 +1,10 @@
 package com.example.hyukmin.hellow;
 
 import android.os.AsyncTask;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -23,7 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MainActivity extends BaseActivity {
@@ -58,6 +58,9 @@ public class MainActivity extends BaseActivity {
     private static final String SERVER_IP = "14.50.109.225";
     private static final String SERVER_PORT = "9000";
 
+    private ListviewAdapter adapter;
+    private ListView list;
+    private ArrayList<Beach> beachList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,27 +70,32 @@ public class MainActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         EditText searchBeach = (EditText) findViewById(R.id.search_beach);
-        
 
+        list = (ListView)findViewById(R.id.beach_LV);
+        adapter = new ListviewAdapter(this, beachList, R.layout.beach_list);
+        list.setAdapter(adapter);
+
+        Log.d(DEBUG_TAG_SEARCH, "Listview generated");
 
         new GetBeachList().execute();
 
         searchBeach.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                Log.d(DEBUG_TAG_SEARCH, "beforeTextChanged : " + s);
 
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d(DEBUG_TAG_SEARCH, "CharSequence : " + s);
+                Log.d(DEBUG_TAG_SEARCH, "onTextChanged : " + s);
 
-
+                new GetBeachList().execute(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d(DEBUG_TAG_SEARCH, "afterTextChanged : " + s);
             }
         });
 
@@ -173,11 +181,24 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setListBy(String[] strArr) {
-        ListviewAdapter adapter = new ListviewAdapter(MainActivity.this, strArr, imageId);
+    public void setListBy(ArrayList<Beach> _beachList) {
+        adapter.clear();
 
-        ListView list=(ListView)findViewById(R.id.beach_LV);
-        list.setAdapter(adapter);
+        adapter.addAll(_beachList);
+
+        if(_beachList.size() < 9) {
+            for (int i = 0; i < (9 - _beachList.size()); i++) {
+                adapter.add(new Beach(""));
+            }
+        }
+
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(DEBUG_TAG_HTTP, "Runnable Called");
+                MainActivity.this.adapter.updateList();
+            }
+        });
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -193,7 +214,7 @@ public class MainActivity extends BaseActivity {
 
     //TODO 서버 통신체크, 그에따른 액션 집어넣기.
 
-    private class GetBeachList extends AsyncTask<String, Void, JSONArray> {
+    private class GetBeachList extends AsyncTask<String, Void, ArrayList<Beach>> {
         /**
          * <p>Runs on the UI thread after {@link #doInBackground}. The
          * specified result is the value returned by {@link #doInBackground}.</p>
@@ -221,25 +242,24 @@ public class MainActivity extends BaseActivity {
          * @see #publishProgress
          */
         @Override
-        protected JSONArray doInBackground(String... params) {
+        protected ArrayList<Beach> doInBackground(String... params) {
             //TODO params 안들어올경우 어떻게 되는지 확인.
-            JSONArray jsonData = new JSONArray();
-            if(params != null) {
-                try {
-                    jsonData = loadBeachList();
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-                return jsonData;
-            } else {
-                try {
-                    jsonData = loadBeachList();
-                } catch (JSONException | IOException e) {
-                    e.printStackTrace();
-                }
-                return jsonData;
-            }
+            Log.d(DEBUG_TAG_SEARCH, "Parameter : " + ((params.length != 0) ? Arrays.toString(params) : "Empty"));
+            try {
+                //String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/beach/" + ((params.length != 0) ? params[0] : "");
+                //String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/beach/경포";
+                String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
+                        "/beach/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
+                Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
+                String result = GetHttpResponseString(strUrl, false, null);
+                Log.d(DEBUG_TAG_HTTP, "String result : " + result);
 
+                beachList = Beach.fromJSON(new JSONArray(result));
+
+            } catch (JSONException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return beachList;
         }
 
         /**
@@ -248,16 +268,18 @@ public class MainActivity extends BaseActivity {
          * <p/>
          * <p>This method won't be invoked if the task was cancelled.</p>
          *
-         * @param jsonArray The result of the operation computed by {@link #doInBackground}.
+         * @param beachList The result of the operation computed by {@link #doInBackground}.
          * @see #onPreExecute
          * @see #doInBackground
          * @see #onCancelled(Object)
          */
         @Override
-        protected void onPostExecute(JSONArray jsonArray) {
-            super.onPostExecute(jsonArray);
+        protected void onPostExecute(ArrayList<Beach> beachList) {
+            super.onPostExecute(beachList);
 
-            String[] baechList = new String[jsonArray.length()];
+            setListBy(beachList);
+            /*
+            String[] baechList = new String[beachList.length()];
             JSONObject tmp =null;
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
@@ -267,16 +289,18 @@ public class MainActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-            setListBy(baechList);
+            setListBy(beachList);
+            */
         }
 
-        private JSONArray loadBeachList(String... param) throws IOException, JSONException {
+        private ArrayList<Beach> loadBeachList(String... param) throws IOException, JSONException {
             String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/list";
-
             String result = GetHttpResponseString(strUrl, false, null);
-
             Log.d(DEBUG_TAG_HTTP, "String result : " + result);
-            return new JSONArray(result);
+
+            return Beach.fromJSON(new JSONArray(result));
+
+
             /*
             InputStream is = null;
             ByteArrayOutputStream baos;
@@ -331,5 +355,4 @@ public class MainActivity extends BaseActivity {
             */
         }
     }
-
 }
