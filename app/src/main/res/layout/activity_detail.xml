@@ -4,20 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/logotext_color">
+    <!-- Title UI -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/splash_back"
         android:clickable="false">
         <TextView
             android:id="@+id/detail_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:layout_marginBottom="5dip"
+            android:paddingTop="5dip"
+            android:paddingBottom="5dip"
             android:gravity="center"
             android:textColor="@color/logotext_color"
-            android:textSize="35dip"
+            android:textSize="30dip"
             android:text="해수욕장"
             android:background="@color/splash_back"/>
     </LinearLayout>
@@ -25,91 +25,138 @@
         android:layout_height="2dip"
         android:layout_width="fill_parent"
         android:background="@color/divider_color"/>
-    <LinearLayout
-        android:orientation="horizontal"
+    <ScrollView
+        android:id="@+id/main_Scroll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dip"
-        android:clickable="false">
-        <ImageView
-            android:id="@+id/swim_img"
-            android:layout_width="45dip"
-            android:layout_height="45dip"
-            android:layout_margin="5dip"/>
-        <TextView
-            android:id="@+id/swim_text"
+        android:fillViewport="true">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:textSize="25dip"
-            android:layout_marginTop="5dip"
-            android:paddingLeft="20dip"
-            android:paddingTop="10dip"/>
-    </LinearLayout>
-    <View
-        android:layout_height="2dip"
+            android:layout_height="fill_parent">
+            <!-- 오늘의 날씨 UI -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:clickable="false">
+                <ImageView
+                    android:id="@+id/today_img"
+                    android:layout_width="45dip"
+                    android:layout_height="45dip"
+                    android:layout_margin="5dip"/>
+                <TextView
+                    android:id="@+id/today_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="20dip"
+                    android:layout_marginTop="5dip"
+                    android:paddingLeft="15dip"
+                    android:paddingTop="13dip"/>
+            </LinearLayout>
+            <View
+                android:layout_height="2dip"
+                android:layout_width="fill_parent"
+                android:background="@color/divider_color"/>
+            <!-- 입수 판단 UI -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:clickable="false">
+                <ImageView
+                    android:id="@+id/swim_img"
+                    android:layout_width="45dip"
+                    android:layout_height="45dip"
+                    android:layout_margin="5dip"/>
+                <TextView
+                    android:id="@+id/swim_text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="20dip"
+                    android:layout_marginTop="5dip"
+                    android:paddingLeft="15dip"
+                    android:paddingTop="13dip"/>
+            </LinearLayout>
+            <View
+                android:layout_height="2dip"
+                android:layout_width="fill_parent"
+                android:background="@color/divider_color"/>
+            <!-- 시간별, 주간별 날씨 UI -->
+            <ExpandableListView
+                android:id="@+id/elv_list"
+                android:groupIndicator="@null"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:divider="@color/divider_color"
+                android:dividerHeight="2dip"
+                android:childDivider="@color/divider_color"
+                android:listSelector="@android:color/transparent"
+                android:transcriptMode="disabled"/>
+            <View
+                android:layout_height="2dip"
+                android:layout_width="fill_parent"
+                android:background="@color/divider_color"/>
+            <!-- 댓글 입력창 UI -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginTop="5dip">
+                <ImageView
+                    android:id="@+id/comment_img"
+                    android:layout_width="45dip"
+                    android:layout_height="45dip"
+                    android:src="@drawable/message1"
+                    android:layout_margin="5dip"
+                    android:layout_marginRight="10dip"/>
+                <EditText
+                    android:id="@+id/comment_input"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLength="12"
+                    android:singleLine="true"
+                    android:paddingLeft="15dip"
+                    android:layout_marginTop="5dip"
+                    android:imeOptions="actionSend"
+                    android:textSize="20dip"
+                    android:inputType="text"/>
+                <Button
+                    android:id="@+id/comment_send_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginLeft="5dip"
+                    android:textColor="@color/logotext_color"
+                    android:background="@drawable/round_btn"/>
+            </LinearLayout>
+            <View
+                android:layout_height="2dip"
+                android:layout_width="fill_parent"
+                android:background="@color/divider_color"/>
+        </LinearLayout>
+    </ScrollView>
+    <ScrollView
+        android:id="@+id/sub_SV"
         android:layout_width="fill_parent"
-        android:background="@color/divider_color"/>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dip"
-        android:clickable="false">
-        <ImageView
-            android:id="@+id/today_img"
-            android:layout_width="45dip"
-            android:layout_height="45dip"
-            android:layout_margin="5dip"/>
-        <TextView
-            android:id="@+id/today_text"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:textSize="25dip"
-            android:layout_marginTop="5dip"
-            android:paddingLeft="20dip"
-            android:paddingTop="10dip"/>
-    </LinearLayout>
-    <View
-        android:layout_height="2dip"
-        android:layout_width="fill_parent"
-        android:background="@color/divider_color"/>
-    <ExpandableListView
-        android:id="@+id/elv_list"
-        android:groupIndicator="@null"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/divider_color"
-        android:dividerHeight="2dip"
-        android:childDivider="@color/divider_color"
-        android:listSelector="@android:color/transparent"/>
-    <View
-        android:layout_height="2dip"
-        android:layout_width="fill_parent"
-        android:background="@color/divider_color"/>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dip"
-        android:layout_marginBottom="5dip"
-        android:layout_marginLeft="15dip">
-        <ImageView
-            android:id="@+id/comment_img"
-            android:layout_width="45dip"
-            android:layout_height="45dip"
-            android:src="@drawable/pointer1"
-            android:layout_margin="5dip"
-            android:layout_marginRight="10dip"/>
-        <EditText
-            android:id="@+id/comment_input"
+        android:layout_height="fill_parent"
+        android:fillViewport="true">
+        <!-- 댓글 UI -->
+        <ListView
+            android:id="@+id/comment_LV"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:maxLength="10"
-            android:singleLine="true"
-            android:paddingLeft="20dip"
-            android:cursorVisible="false"
-            android:layout_marginTop="5dip"/>
-    </LinearLayout>
+            android:divider="@color/divider_color"
+            android:dividerHeight="2dip"
+            android:clickable="false"
+            android:listSelector="@android:color/transparent">
+        </ListView>
+    </ScrollView>
 </LinearLayout>
