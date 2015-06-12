@@ -9,8 +9,10 @@
     <string name="send">전송</string>
     <string name="time_weather">시간별날씨</string>
     <string name="week_weather">주간별날씨</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3500224505443578/4073673241</string>
 
     <color name="splash_back">#9DF4E3</color>
     <color name="logotext_color">#FFFFFF</color>
     <color name="divider_color">#D4D4D4</color>
+    <color name="blue">#2AB1E0</color>
 </resources>

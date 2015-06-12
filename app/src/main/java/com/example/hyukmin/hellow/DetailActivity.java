@@ -1,44 +1,53 @@
 package com.example.hyukmin.hellow;
 
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 
 /**
  * Created by hyukmmin on 2015-06-01.
  */
-public class DetailActivity extends Activity {
+public class DetailActivity extends BaseActivity {
 
-    private ArrayList<String> groupList = null;
-    private ArrayList<ArrayList<String>> childList_txt = null;
-    private ArrayList<ArrayList<Integer>> childList_img = null;
-    private ArrayList<String> childConName = null;
-    private ArrayList<Integer> childConImg = null;
-    private ExpandableListView ExListView;
-    private ScrollView main_SV;
-    private ScrollView sub_SV;
     private ListView comment_LV;
+    private InputMethodManager mInputMethodManager;
+    private EditText key_send_btn;
+
+    private long backKeyPressedTime = 0;
+    private Toast toast;
 
     public String[] weatherName = {
             "맑음",
-            "태풍",
-            "태풍",
-            "태풍",
-            "태풍",
+            "태풍1",
+            "여우비",
+            "태풍2",
+            "태풍3",
             "여우비",
             "여우비",
             "맑음",
@@ -96,140 +105,10 @@ public class DetailActivity extends Activity {
             "숙소는 어디가 좋아요?",
             "이 앞에 널린게 숙소임",
             "아하",
-            "ㅋㅋㅋㅋㅋㅋ",
-            "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
-            "날씨 좋아용~",
-            "입수는 가능한가요?",
-            "네 다들 잘놀고 있어요~",
-            "숙소는 어디가 좋아요?",
-            "이 앞에 널린게 숙소임",
-            "아하",
-            "ㅋㅋㅋㅋㅋㅋ",
-            "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
-            "날씨 좋아용~",
-            "입수는 가능한가요?",
-            "네 다들 잘놀고 있어요~",
-            "숙소는 어디가 좋아요?",
-            "이 앞에 널린게 숙소임",
-            "아하",
-            "ㅋㅋㅋㅋㅋㅋ",
-            "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
-            "날씨 좋아용~",
-            "입수는 가능한가요?",
-            "네 다들 잘놀고 있어요~",
-            "숙소는 어디가 좋아요?",
-            "이 앞에 널린게 숙소임",
-            "아하",
-            "ㅋㅋㅋㅋㅋㅋ",
-            "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
-            "날씨 좋아용~",
-            "입수는 가능한가요?",
-            "네 다들 잘놀고 있어요~",
-            "숙소는 어디가 좋아요?",
-            "이 앞에 널린게 숙소임",
-            "아하",
-            "ㅋㅋㅋㅋㅋㅋ",
-            "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
-            "날씨 좋아용~",
-            "입수는 가능한가요?",
-            "네 다들 잘놀고 있어요~",
-            "숙소는 어디가 좋아요?",
-            "이 앞에 널린게 숙소임",
-            "아하",
             "ㅋㅋㅋㅋㅋㅋ"
     };
 
     Integer[] comment_Img = {
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
             R.drawable.man1,
             R.drawable.man2,
             R.drawable.man3,
@@ -249,6 +128,11 @@ public class DetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
+
+        // 광고 추가
+        AdView mAdView = (AdView) findViewById(R.id.adView1);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         // 서버 통신
 
@@ -270,28 +154,14 @@ public class DetailActivity extends Activity {
         today_img.setImageResource(R.drawable.image3);
         today_text.setText(R.string.today_weather);
 
-        setLayout();
-
-        groupList = new ArrayList<String>();
-        childList_txt = new ArrayList<ArrayList<String>>();
-        childList_img = new ArrayList<ArrayList<Integer>>();
-        childConName = new ArrayList<String>();
-        childConImg = new ArrayList<Integer>();
-
-        groupList.add("시간별날씨");
-        groupList.add("주간별날씨");
-
-        for (int i = 0;i < 9;i++){
-            childConName.add("" + weatherName[i]);
-            childConImg.add(weatherImage[i]);
-        }
-
-
-        int num = 0;
-        while (num<groupList.size()) {
-            childList_txt.add(childConName);
-            childList_img.add(childConImg);
-            num++;
+        //생성 for문
+        for(int i = 1;i < 3 ;i++){
+            int ImgResId = getResources().getIdentifier("time_img"+""+i, "id", getPackageName());
+            ImageView time_img = (ImageView) findViewById(ImgResId);
+            time_img.setImageResource(weatherImage[i-1]);
+            int TextResId = getResources().getIdentifier("time_text"+""+i, "id", getPackageName());
+            TextView time_txt = (TextView) findViewById(TextResId);
+            time_txt.setText(weatherName[i-1].toString());
         }
 
         // 댓글 작업(임시)
@@ -299,67 +169,40 @@ public class DetailActivity extends Activity {
         comment_LV = (ListView)findViewById(R.id.comment_LV);
         comment_LV.setAdapter(adapter);
 
-        /*
-        childListContent.add("1");
-        childListContent.add("2");
-        childListContent.add("3");
+        mInputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        key_send_btn = (EditText) findViewById(R.id.comment_input);
 
-        childList.add(childListContent);
-        childList.add(childListContent);
-        childList.add(childListContent);
-        */
-        ExListView.setAdapter(new ExpandableAdapter(this, groupList, childList_txt, childList_img));
-
-        ExListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        // 댓글레이아웃 전송 버튼 눌렀을 때 처리
+        Button send_btn = (Button) findViewById(R.id.comment_send_btn);
+        send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                Toast.makeText(getApplicationContext(), "g click = " + groupPosition, Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                Log.d("SEND_BTN","-------ok-----------");
+                // 내용 전송 처리
+
+                //전송 후 처리
+                key_send_btn.setText(null);
+                mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0);// 키보드 내리기
+            }
+        });
+
+        // 키보드 전송 버튼 눌렀을 때 처리
+        key_send_btn.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEND || event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
+                    Log.d("SEND","-------ok-----------");
+                    // 내용 전송 처리
+
+                    // 전송 후 처리
+                    key_send_btn.setText(null);
+                    mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0); // 키보드 내리기
+                    return true;
+                }
                 return false;
             }
         });
 
-
-        ExListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getApplicationContext(), "c click = " + childPosition, Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-        ExListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getApplicationContext(), "g Collapse = " + groupPosition, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ExListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(), "g Expand = " + groupPosition, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        main_SV = (ScrollView)findViewById(R.id.main_Scroll);
-
-        ExListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                main_SV.requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
-
-        sub_SV = (ScrollView)findViewById(R.id.sub_SV);
-
-        comment_LV.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                sub_SV.requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
         /*
         comment_LV.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -369,69 +212,16 @@ public class DetailActivity extends Activity {
             }
         });
         */
-        setListViewHeightBasedOnChildren(comment_LV);
-        setExpandableListViewHeight(ExListView, -1);
 
     }
 
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-
+    // 뒤로가기 버튼 눌렀을 경우 - 한 번 클릭시 페이지 리프레쉬하고 두 번 클릭시 메인페이지로 이동
+    public void onBackPressed() {
+        Intent i = new Intent(DetailActivity.this, MainActivity.class);
+        startActivity(i);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    private void setExpandableListViewHeight(ExpandableListView expandableListView, int group) {
-        ExpandableListAdapter listAdapter = expandableListView.getExpandableListAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(expandableListView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
-            view = listAdapter.getGroupView(i, false, view, expandableListView);
-            if (i == 0) {
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-            }
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-            if(((expandableListView.isGroupExpanded(i)) && (i != group)) || ((!expandableListView.isGroupExpanded(i)) && (i == group))) {
-                View listItem = null;
-                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
-                    listItem = listAdapter.getChildView(i, j, false, listItem, expandableListView);
-                    listItem.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, View.MeasureSpec.UNSPECIFIED));
-                    listItem.measure(
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-                    totalHeight += listItem.getMeasuredHeight();
-                }
-            }
-        }
-        ViewGroup.LayoutParams params = expandableListView.getLayoutParams();
-        params.height = totalHeight + (expandableListView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
-        expandableListView.setLayoutParams(params);
-        expandableListView.requestLayout();
-    }
-
-    private void setLayout(){
-        ExListView = (ExpandableListView)findViewById(R.id.elv_list);
-    }
 
 }

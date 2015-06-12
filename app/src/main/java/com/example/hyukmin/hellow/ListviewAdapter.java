@@ -2,6 +2,8 @@ package com.example.hyukmin.hellow;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -63,8 +65,9 @@ public class ListviewAdapter extends ArrayAdapter<Beach> {
         if (item != null) {
             TextView txtTitle = (TextView) view.findViewById(R.id.beach_list_text);
             ImageView imageView = (ImageView) view.findViewById(R.id.beach_list_img);
-
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "InterparkGothicBold.ttf"); //폰트 적용
             if(txtTitle != null) {
+                txtTitle.setTypeface(typeface); //폰트 적용
                 txtTitle.setText(item._name);
             }
         }
@@ -117,4 +120,6 @@ public class ListviewAdapter extends ArrayAdapter<Beach> {
         Log.d(DEBUG, "updateList");
         notifyDataSetChanged();
     }
+
+
 }

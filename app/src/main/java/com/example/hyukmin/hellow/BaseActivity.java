@@ -1,7 +1,11 @@
 package com.example.hyukmin.hellow;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -14,6 +18,9 @@ import java.net.URL;
  * Created by baesangjoon on 15. 6. 4..
  */
 public class BaseActivity extends Activity{
+
+    private static Typeface mTypeface;
+
     public String GetHttpResponseString(String location, Boolean is_post, String form_values) {
         String result = "";
         String input_line = null;
@@ -64,5 +71,28 @@ public class BaseActivity extends Activity{
             e.printStackTrace();
         }
         return stream;
+    }
+
+    // 글꼴 적용 관련
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+
+        if (BaseActivity.mTypeface == null)
+            BaseActivity.mTypeface = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf");
+
+        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+        setGlobalFont(root);
+    }
+
+    // 글꼴 적용 관련
+    void setGlobalFont(ViewGroup root) {
+        for (int i = 0; i < root.getChildCount(); i++) {
+            View child = root.getChildAt(i);
+            if (child instanceof TextView)
+                ((TextView)child).setTypeface(mTypeface);
+            else if (child instanceof ViewGroup)
+                setGlobalFont((ViewGroup)child);
+        }
     }
 }

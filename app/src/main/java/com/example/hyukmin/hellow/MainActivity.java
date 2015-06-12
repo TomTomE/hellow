@@ -1,5 +1,6 @@
 package com.example.hyukmin.hellow;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +26,9 @@ import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 
 public class MainActivity extends BaseActivity {
@@ -62,12 +67,20 @@ public class MainActivity extends BaseActivity {
     private ListView list;
     private ArrayList<Beach> beachList = new ArrayList<>();
 
+    private long backKeyPressedTime = 0;
+    private Toast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 키보드가 바로 뜨는 것을 방지
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        // 광고 추가
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         EditText searchBeach = (EditText) findViewById(R.id.search_beach);
 
@@ -98,6 +111,8 @@ public class MainActivity extends BaseActivity {
                 Log.d(DEBUG_TAG_SEARCH, "afterTextChanged : " + s);
             }
         });
+
+
 
 //        searchBeach.setOnKeyListener(new View.OnKeyListener() {
 //
@@ -158,6 +173,24 @@ public class MainActivity extends BaseActivity {
         });
         */
     }
+    // 뒤로가기 버튼 눌렀을 경우 - 경고메시지 띄우고 두 번 클릭시 앱 종료
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            showGuide();
+            return;
+        }
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            MainActivity.this.finish();
+            toast.cancel();
+        }
+    }
+
+    public void showGuide() {
+        toast = Toast.makeText(MainActivity.this,
+                "\'뒤로\'버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -180,6 +213,8 @@ public class MainActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     public void setListBy(ArrayList<Beach> _beachList) {
         adapter.clear();
@@ -355,4 +390,6 @@ public class MainActivity extends BaseActivity {
             */
         }
     }
+
+
 }

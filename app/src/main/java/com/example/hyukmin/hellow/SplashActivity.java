@@ -9,7 +9,7 @@ import android.view.Window;
 /**
  * Created by hyukmmin on 2015-06-01.
  */
-public class SplashActivity extends Activity {
+public class SplashActivity extends BaseActivity {
 
     Handler hd;
 

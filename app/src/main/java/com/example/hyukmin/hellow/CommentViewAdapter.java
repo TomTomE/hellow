@@ -1,6 +1,7 @@
 package com.example.hyukmin.hellow;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,8 @@ public class CommentViewAdapter extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.comment_list_text);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.comment_list_img);
         TextView txtDate = (TextView) rowView.findViewById(R.id.comment_text_date);
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "InterparkGothicBold.ttf");
+
         /*
         Random ran = new Random();
         // 댓글 수만큼 이미지 리스트 랜덤 구성
@@ -47,6 +50,10 @@ public class CommentViewAdapter extends ArrayAdapter<String> {
             }
         }
         */
+
+        txtTitle.setTypeface(typeface);
+        txtDate.setTypeface(typeface);
+
         txtTitle.setText(comment_list[position]);
         Log.d("comment_Img[position]", ""+comment_Img[position]);
         imageView.setImageResource(comment_Img[position]);
