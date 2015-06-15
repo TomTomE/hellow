@@ -30,7 +30,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Created by hyukmmin on 2015-06-01.
  */
 public class DetailActivity extends BaseActivity {
@@ -142,27 +142,18 @@ public class DetailActivity extends BaseActivity {
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(""+id);
 
-        // 오늘 날씨와 입수가능()
-        ImageView swim_img = (ImageView) findViewById(R.id.swim_img);
-        TextView swim_text = (TextView) findViewById(R.id.swim_text);
+        // 오늘 날씨, 기온, 강수량, 주차가능
+        TextView temp_text = (TextView) findViewById(R.id.temp_text);
         ImageView today_img = (ImageView) findViewById(R.id.today_img);
         TextView today_text = (TextView) findViewById(R.id.today_text);
-
-        swim_img.setImageResource(R.drawable.swim1);
-        swim_text.setText(R.string.swim);
+        TextView rainfall_text = (TextView) findViewById(R.id.rainfall_text);
+        TextView parking_text = (TextView) findViewById(R.id.parking_text);
 
         today_img.setImageResource(R.drawable.image3);
         today_text.setText(R.string.today_weather);
-
-        //생성 for문
-        for(int i = 1;i < 3 ;i++){
-            int ImgResId = getResources().getIdentifier("time_img"+""+i, "id", getPackageName());
-            ImageView time_img = (ImageView) findViewById(ImgResId);
-            time_img.setImageResource(weatherImage[i-1]);
-            int TextResId = getResources().getIdentifier("time_text"+""+i, "id", getPackageName());
-            TextView time_txt = (TextView) findViewById(TextResId);
-            time_txt.setText(weatherName[i-1].toString());
-        }
+        temp_text.setText("29" + "℃");
+        rainfall_text.setText("120" + "mm");
+        parking_text.setText(R.string.parking);
 
         // 댓글 작업(임시)
         CommentViewAdapter adapter = new CommentViewAdapter(DetailActivity.this, comment_list, comment_Img);
@@ -197,7 +188,6 @@ public class DetailActivity extends BaseActivity {
                     // 전송 후 처리
                     key_send_btn.setText(null);
                     mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0); // 키보드 내리기
-                    return true;
                 }
                 return false;
             }

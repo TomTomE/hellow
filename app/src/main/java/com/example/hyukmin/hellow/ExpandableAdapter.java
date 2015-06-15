@@ -61,13 +61,13 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         }else{
             viewHolder = (ViewHolder)v.getTag();
         }
-
+        /*
         if(isExpanded){
             viewHolder.group_img.setImageResource(R.drawable.minus);
         }else{
             viewHolder.group_img.setImageResource(R.drawable.plus_bold);
         }
-
+        */
         viewHolder.group_name.setText(getGroup(groupPosition));
 
         return v;
