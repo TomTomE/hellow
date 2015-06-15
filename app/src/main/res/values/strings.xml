@@ -3,16 +3,18 @@
     <string name="action_settings">action_settings</string>
     <string name="detail">detail</string>
     <string name="logo_text">BeWEATHER</string>
-    <string name="swim">입수가능</string>
-    <string name="noswim">입수불가능</string>
     <string name="today_weather">맑음</string>
     <string name="send">전송</string>
-    <string name="time_weather">시간별날씨</string>
-    <string name="week_weather">주간별날씨</string>
+    <string name="parking">주차장 사용가능</string>
+    <string name="parking_no">주차장 사용불가</string>
     <string name="banner_ad_unit_id">ca-app-pub-3500224505443578/4073673241</string>
 
-    <color name="splash_back">#9DF4E3</color>
-    <color name="logotext_color">#FFFFFF</color>
-    <color name="divider_color">#D4D4D4</color>
-    <color name="blue">#2AB1E0</color>
+    <color name="splash_back">#00DFFC</color>
+    <color name="splash_back1">#00B4CC</color>
+    <color name="splash_back2">#008C9E</color>
+    <color name="splash_back3">#005F6B</color>
+    <color name="logotext_color">#ffffff</color>
+    <color name="divider_color">#EAEAEA</color>
+    <!--<color name="divider_color">#343838</color>-->
+    <color name="blue">#0070d6</color>
 </resources>

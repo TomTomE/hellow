@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:clickable="false"
-        android:background="@color/splash_back">
+        android:background="@color/splash_back1">
         <TextView
             android:id="@+id/detail_title"
             android:layout_width="fill_parent"
@@ -23,7 +23,7 @@
             android:textColor="@color/logotext_color"
             android:textSize="30dip"
             android:text="해수욕장"
-            android:background="@color/splash_back"/>
+            android:background="@color/splash_back1"/>
     </LinearLayout>
     <View
         android:layout_height="2dip"
@@ -64,7 +64,7 @@
                 android:layout_height="2dip"
                 android:layout_width="fill_parent"
                 android:background="@color/divider_color"/>
-            <!-- 입수 판단 UI -->
+            <!-- 기온 UI -->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -72,12 +72,13 @@
                 android:layout_marginLeft="5dip"
                 android:clickable="false">
                 <ImageView
-                    android:id="@+id/swim_img"
+                    android:id="@+id/temp_img"
                     android:layout_width="45dip"
                     android:layout_height="45dip"
-                    android:layout_margin="5dip"/>
+                    android:layout_margin="5dip"
+                    android:src="@drawable/thermometer"/>
                 <TextView
-                    android:id="@+id/swim_text"
+                    android:id="@+id/temp_text"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -90,7 +91,7 @@
                 android:layout_height="2dip"
                 android:layout_width="fill_parent"
                 android:background="@color/divider_color"/>
-            <!-- 시간별 날씨 UI 1-->
+            <!-- 강수량 UI-->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -98,12 +99,13 @@
                 android:layout_marginLeft="5dip"
                 android:clickable="false">
                 <ImageView
-                    android:id="@+id/time_img1"
+                    android:id="@+id/rainfall_img"
                     android:layout_width="45dip"
                     android:layout_height="45dip"
-                    android:layout_margin="5dip"/>
+                    android:layout_margin="5dip"
+                    android:src="@drawable/rainfall"/>
                 <TextView
-                    android:id="@+id/time_text1"
+                    android:id="@+id/rainfall_text"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -116,7 +118,7 @@
                 android:layout_height="2dip"
                 android:layout_width="fill_parent"
                 android:background="@color/divider_color"/>
-            <!-- 시간별 날씨 UI 2-->
+            <!-- 주차가능 UI-->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -124,12 +126,13 @@
                 android:layout_marginLeft="5dip"
                 android:clickable="false">
                 <ImageView
-                    android:id="@+id/time_img2"
+                    android:id="@+id/parking_img"
                     android:layout_width="45dip"
                     android:layout_height="45dip"
-                    android:layout_margin="5dip"/>
+                    android:layout_margin="5dip"
+                    android:src="@drawable/parking"/>
                 <TextView
-                    android:id="@+id/time_text2"
+                    android:id="@+id/parking_text"
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
@@ -153,7 +156,7 @@
                     android:id="@+id/comment_img"
                     android:layout_width="45dip"
                     android:layout_height="45dip"
-                    android:src="@drawable/message1"
+                    android:src="@drawable/message"
                     android:layout_margin="5dip"
                     android:layout_marginRight="10dip"/>
                 <EditText
