@@ -4,6 +4,7 @@ package com.example.hyukmin.hellow;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -28,7 +29,14 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by hyukmmin on 2015-06-01.
@@ -136,11 +144,12 @@ public class DetailActivity extends BaseActivity {
 
         // 서버 통신
 
+
+
         // Header에 이름(임시)
         Intent in = getIntent();
-        int id = in.getExtras().getInt("id");
         TextView title = (TextView) findViewById(R.id.detail_title);
-        title.setText(""+id);
+        title.setText((CharSequence) in.getExtras().get("id"));
 
         // 오늘 날씨와 입수가능()
         ImageView swim_img = (ImageView) findViewById(R.id.swim_img);
@@ -194,10 +203,11 @@ public class DetailActivity extends BaseActivity {
                     Log.d("SEND","-------ok-----------");
                     // 내용 전송 처리
 
+                    new PostPapers().execute("test");
+
                     // 전송 후 처리
                     key_send_btn.setText(null);
                     mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0); // 키보드 내리기
-                    return true;
                 }
                 return false;
             }
@@ -223,5 +233,100 @@ public class DetailActivity extends BaseActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+    private class PostPapers extends AsyncTask<String, Void, JSONObject> {
 
+
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p/>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param params The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONObject body = new JSONObject();
+            try {
+                body.put("boardId", "PAC2014091312140000102");
+                body.put("contents", "TEST");
+                body.put("pswd", "0000");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/chat/";
+            Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
+            String result = GetHttpResponseString(strUrl, true, body);
+            Log.d(DEBUG_TAG_HTTP, "String result : " + result);
+
+
+            try {
+                body = new JSONObject(result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return body;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param object The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(JSONObject object) {
+            super.onPostExecute(object);
+        }
+    }
+
+    private class GetPapers extends AsyncTask<String, Void, JSONObject> {
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p/>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param params The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONObject body = new JSONObject();
+            try {
+                body.put("boardId", "PAC2014091312140000102");
+                body.put("contents", "TEST");
+                body.put("pswd", "0000");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/chat/";
+            Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
+            String result = GetHttpResponseString(strUrl, true, body);
+            Log.d(DEBUG_TAG_HTTP, "String result : " + result);
+
+            try {
+                body = new JSONObject(result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return body;
+        }
+    }
 }

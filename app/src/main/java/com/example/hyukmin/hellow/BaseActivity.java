@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,10 +21,15 @@ import java.net.URL;
  * Created by baesangjoon on 15. 6. 4..
  */
 public class BaseActivity extends Activity{
+    public static final String DEBUG_TAG_HTTP = "HTTP - Beach List";
+    public static final String DEBUG_TAG_SEARCH = "Search - Beach List";
+
+    public static final String SERVER_IP = "14.50.109.225";
+    public static final String SERVER_PORT = "9000";
 
     private static Typeface mTypeface;
 
-    public String GetHttpResponseString(String location, Boolean is_post, String form_values) {
+    public String GetHttpResponseString(String location, Boolean is_post, JSONObject form_values) {
         String result = "";
         String input_line = null;
 
@@ -48,7 +56,7 @@ public class BaseActivity extends Activity{
 
     }
 
-    public InputStream GetHttpResponseStream(String location, Boolean is_post, String form_values) {
+    public InputStream GetHttpResponseStream(String location, Boolean is_post, JSONObject form_values) {
         InputStream stream = null;
 
         try {
@@ -59,10 +67,11 @@ public class BaseActivity extends Activity{
             connection.setRequestProperty("Accept", "application/json");
             connection.setUseCaches(false);
             if (form_values != null) {
-                Log.d("BaseActivity", form_values);
+                Log.d("BaseActivity", form_values.toString());
+                connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
                 OutputStream os = connection.getOutputStream();
-                os.write(form_values.getBytes("utf-8"));
+                os.write(form_values.toString().getBytes("utf-8"));
                 os.flush();
                 os.close();
             }

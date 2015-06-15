@@ -216,7 +216,7 @@ public class MainActivity extends BaseActivity {
 
 
 
-    public void setListBy(ArrayList<Beach> _beachList) {
+    public void setListBy(final ArrayList<Beach> _beachList) {
         adapter.clear();
 
         adapter.addAll(_beachList);
@@ -238,9 +238,15 @@ public class MainActivity extends BaseActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position > _beachList.size() - 1) {
+                    return;
+                }
                 //Toast.makeText(MainActivity.this, "You Clicked at " + beachlist[position], Toast.LENGTH_SHORT).show();
                 Intent in = new Intent(MainActivity.this, DetailActivity.class);
-                in.putExtra("id", position);
+
+                Beach temp = adapter.getItem(position);
+                in.putExtra("id", temp._id);
+
                 startActivity(in);
                 //finish();
             }
