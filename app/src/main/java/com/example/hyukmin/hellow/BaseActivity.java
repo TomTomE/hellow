@@ -23,6 +23,7 @@ import java.net.URL;
 public class BaseActivity extends Activity{
     public static final String DEBUG_TAG_HTTP = "HTTP - Beach List";
     public static final String DEBUG_TAG_SEARCH = "Search - Beach List";
+    public static final String DEBUG_TAG_VIEW = "DEBUG_TAG_VIEW";
 
     public static final String SERVER_IP = "14.50.109.225";
     public static final String SERVER_PORT = "9000";
