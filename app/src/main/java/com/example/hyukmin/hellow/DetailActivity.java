@@ -28,6 +28,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /*
  * Created by hyukmmin on 2015-06-01.
@@ -41,6 +43,7 @@ public class DetailActivity extends BaseActivity {
 
     private InputMethodManager mInputMethodManager;
     private EditText key_send_btn;
+    private Button send_btn;
 
     private TextView temp_text; // 오늘의 기온 텍스트
     private ImageView today_img; // 오늘의 날씨 이미지
@@ -48,40 +51,7 @@ public class DetailActivity extends BaseActivity {
     private TextView rainfall_text; // 오늘의 강수량 텍스트
     private TextView parking_text; // 주차가능 여부 텍스트
 
-    private long backKeyPressedTime = 0;
-    private Toast toast;
-
-    public String[] comment_list = {
-            "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
-            "날씨 좋아용~",
-            "입수는 가능한가요?",
-            "네 다들 잘놀고 있어요~",
-            "숙소는 어디가 좋아요?",
-            "이 앞에 널린게 숙소임",
-            "아하",
-            "ㅋㅋㅋㅋㅋㅋ"
-    };
-
-    Integer[] comment_Img = {
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1,
-            R.drawable.man2,
-            R.drawable.man3,
-            R.drawable.man4,
-            R.drawable.man5,
-            R.drawable.man6,
-            R.drawable.man1
-    };
+    private Timer timer;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +72,7 @@ public class DetailActivity extends BaseActivity {
         today_img = (ImageView) findViewById(R.id.today_img);
 
         // Header에 이름(임시)
-        TextView title = (TextView) findViewById(R.id.detail_title);
+        final TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText((CharSequence) in.getExtras().get("title"));
 
         new GetWeather().execute(in.getExtras().get("id").toString());
@@ -122,16 +92,26 @@ public class DetailActivity extends BaseActivity {
         key_send_btn = (EditText) findViewById(R.id.comment_input);
 
         // 댓글레이아웃 전송 버튼 눌렀을 때 처리
-        Button send_btn = (Button) findViewById(R.id.comment_send_btn);
+        send_btn = (Button) findViewById(R.id.comment_send_btn);
         send_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("SEND_BTN","-------ok-----------");
-                // 내용 전송 처리
+                Log.d("SEND_BTN", "-------ok-----------");
 
-                //전송 후 처리
-                key_send_btn.setText(null);
-                mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0);// 키보드 내리기
+                if (send_btn.getText().equals("ON")) {
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            new GetPapers().execute(in.getExtras().get("id").toString());
+                        }
+                    },0, 5000);
+                    send_btn.setText("OFF");
+                } else {
+                    timer.cancel();
+                    timer = null;
+                    send_btn.setText("ON");
+                }
             }
         });
 
@@ -179,8 +159,8 @@ public class DetailActivity extends BaseActivity {
         protected JSONObject doInBackground(String... params) {
             JSONObject weather = new JSONObject();
             try {
-                String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
-                        "/beaches/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
+                String strUrl = SERVER_URL +
+                        "/detail/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
                 Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
                 String result = GetHttpResponseString(strUrl, false, null);
                 Log.d(DEBUG_TAG_HTTP, "String result : " + result);
@@ -308,7 +288,7 @@ public class DetailActivity extends BaseActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/chat/";
+            String strUrl = SERVER_URL + "/chat/";
             Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
             String result = GetHttpResponseString(strUrl, true, body);
             Log.d(DEBUG_TAG_HTTP, "String result : " + result);
@@ -368,7 +348,7 @@ public class DetailActivity extends BaseActivity {
          */
         @Override
         protected ArrayList<Paper> doInBackground(String... params) {
-            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/chat/" + params[0];
+            String strUrl = SERVER_URL + "/chat/" + params[0];
             Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
             String result = GetHttpResponseString(strUrl, false, null);
             Log.d(DEBUG_TAG_HTTP, "String result : " + result);

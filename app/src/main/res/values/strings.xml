@@ -4,7 +4,7 @@
     <string name="detail">detail</string>
     <string name="logo_text">BeWEATHER</string>
     <string name="today_weather">맑음</string>
-    <string name="send">전송</string>
+    <string name="send">ON</string>
     <string name="parking">주차장 사용가능</string>
     <string name="parking_no">주차장 사용불가</string>
     <string name="banner_ad_unit_id">ca-app-pub-3500224505443578/4073673241</string>

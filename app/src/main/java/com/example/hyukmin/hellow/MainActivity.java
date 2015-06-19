@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity {
                 //String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/beach/경포";
 
 
-                String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
+                String strUrl = SERVER_URL +
                         "/beach/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
                 Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
 
@@ -303,7 +303,7 @@ public class MainActivity extends BaseActivity {
         }
 
         private ArrayList<Beach> loadBeachList(String... param) throws IOException, JSONException {
-            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/list";
+            String strUrl = SERVER_URL + "/list";
             String result = GetHttpResponseString(strUrl, false, null);
             Log.d(DEBUG_TAG_HTTP, "String result : " + result);
 

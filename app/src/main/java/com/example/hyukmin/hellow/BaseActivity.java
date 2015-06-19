@@ -30,6 +30,7 @@ public class BaseActivity extends Activity{
 
     public static final String SERVER_IP = "14.50.109.225";
     public static final String SERVER_PORT = "9000";
+    public static final String SERVER_URL = "http://hellowserver-tomtome.rhcloud.com";
 
     private static Typeface mTypeface;
 
