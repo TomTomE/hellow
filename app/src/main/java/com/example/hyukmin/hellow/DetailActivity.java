@@ -1,11 +1,14 @@
 package com.example.hyukmin.hellow;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -28,6 +31,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
  * Created by hyukmmin on 2015-06-01.
@@ -38,6 +42,7 @@ public class DetailActivity extends BaseActivity {
     private ListView comment_LV;
     private ArrayList<Paper> papers = new ArrayList<>();
     private CommentViewAdapter adapter;
+    private AlertDialog.Builder alt_bld;
 
     private InputMethodManager mInputMethodManager;
     private EditText key_send_btn;
@@ -53,11 +58,11 @@ public class DetailActivity extends BaseActivity {
 
     public String[] comment_list = {
             "거기 날씨 어때요?",
-            "개구림",
-            "낙산 쪽은 괜찮아요",
-            "ㅎㅎ",
-            "저거 거짓말",
-            "뭐가 진짜임?",
+            "정말 좋아요~",
+            "사람들은 많아요?",
+            "엄청 많네요",
+            "입수 가능한가요?",
+            "네 가능하네요~",
             "날씨 좋아용~",
             "입수는 가능한가요?",
             "네 다들 잘놀고 있어요~",
@@ -112,11 +117,17 @@ public class DetailActivity extends BaseActivity {
         comment_LV = (ListView)findViewById(R.id.comment_LV);
         comment_LV.setAdapter(adapter);
         comment_LV.setEmptyView(findViewById(android.R.id.empty));
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf"); //폰트 적용
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "InterparkGothicLight.ttf"); //폰트 적용
         TextView empty_TV = (TextView) findViewById(R.id.empty_TV);
         empty_TV.setTypeface(typeface);
 
         new GetPapers().execute(in.getExtras().get("id").toString());
+        TextView detailTitle = (TextView) findViewById(R.id.detail_title);
+        Typeface typeface_b = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf"); //폰트 적용
+        detailTitle.setTypeface(typeface_b); //폰트 적용
+        TextView commentDate = (TextView) findViewById(R.id.comment_text_date);
+        Typeface typeface_m = Typeface.createFromAsset(getAssets(), "InterparkGothicMedium.ttf"); //폰트 적용
+        commentDate.setTypeface(typeface_m); //폰트 적용
 
         mInputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         key_send_btn = (EditText) findViewById(R.id.comment_input);
@@ -163,7 +174,9 @@ public class DetailActivity extends BaseActivity {
         });
         */
 
+
     }
+
 
     // 뒤로가기 버튼 눌렀을 경우 - 클릭시 메인페이지로 이동
     public void onBackPressed() {
@@ -176,16 +189,23 @@ public class DetailActivity extends BaseActivity {
     // 날씨 받아오는 함수
     private class GetWeather extends AsyncTask<String, Void, JSONObject> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            alt_bld = new AlertDialog.Builder(DetailActivity.this);
+        }
+
+        @Override
         protected JSONObject doInBackground(String... params) {
             JSONObject weather = new JSONObject();
             try {
                 String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
-                        "/beaches/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
+                        "/detail/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
                 Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
                 String result = GetHttpResponseString(strUrl, false, null);
                 Log.d(DEBUG_TAG_HTTP, "String result : " + result);
-                weather = new JSONObject(result);
-
+                if(result != null){
+                    weather = new JSONObject(result);
+                }
             } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -195,93 +215,137 @@ public class DetailActivity extends BaseActivity {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
-            try {
-                JSONObject weather = (JSONObject) jsonObject.get("weather");
+            if(jsonObject.toString().equals("{}")){
+                alt_bld.setMessage(Html.fromHtml("현재 서버 통신이 원활하지 않습니다.<br>다시 시도해주시기 바랍니다."))
+                        .setCancelable(false)
+                        .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Action for 'Yes' Button
+                                Intent i = new Intent(DetailActivity.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alert = alt_bld.create();
+                // Title for AlertDialog
+                alert.setTitle("서버 통신 에러");
+                // Icon for AlertDialog
+                alert.setIcon(R.drawable.ic_launcher);
+                alert.show();
+            }
+            else {
+                try {
 
-                // 오늘 날씨, 기온, 강수량, 주차가능
+                    JSONObject weather = (JSONObject) jsonObject.get("weather");
+                    // 오늘 날씨, 기온, 강수량, 주차가능
 
-                String rainfall = weather.get("RN1").toString();
-                String sky = weather.get("SKY").toString();
-                if(rainfall.equals("1mm 미만") || rainfall.equals("1~4mm") || rainfall.equals("5~9mm")){
-                    rainfall = "얕은 비";
-                    if(sky.equals("맑음")){
+                    String rainfall = weather.get("RN1").toString();
+                    String sky = weather.get("SKY").toString();
+                    if(rainfall.equals("1mm 미만") || rainfall.equals("1~4mm") || rainfall.equals("5~9mm")){
+                        rainfall = "얕은 비";
+                        if(sky.equals("맑음")){
+                            today_text.setText(rainfall);
+                            today_img.setImageResource(R.drawable.weather5);
+                        }
+                        else if(sky.equals("구름조금")){
+                            today_text.setText(rainfall+"와 "+sky);
+                            today_img.setImageResource(R.drawable.weather6);
+                        }
+                        else if(sky.equals("구름많음")){
+                            today_text.setText(rainfall+"와 "+ sky);
+                            today_img.setImageResource(R.drawable.weather7);
+                        }
+                        else {
+                            today_text.setText("흐리고 "+rainfall);
+                            today_img.setImageResource(R.drawable.weather8);
+                        }
+                    }
+
+                    else if(rainfall.equals("10~19mm") || rainfall.equals("20~39mm") || rainfall.equals("40~69mm")){
+                        rainfall = "비";
                         today_text.setText(rainfall);
-                        today_img.setImageResource(R.drawable.weather5);
+                        if(sky.equals("맑음")){
+                            today_img.setImageResource(R.drawable.weather9);
+                        }
+                        else if(sky.equals("구름조금")){
+                            today_img.setImageResource(R.drawable.weather10);
+                        }
+                        else if(sky.equals("구름많음")){
+                            today_img.setImageResource(R.drawable.weather11);
+                        }
+                        else {
+                            today_img.setImageResource(R.drawable.weather12);
+                        }
                     }
-                    else if(sky.equals("구름조금")){
-                        today_text.setText(rainfall+"와 "+sky);
-                        today_img.setImageResource(R.drawable.weather6);
+
+                    else if(rainfall.equals("70mm 이상")){
+                        rainfall = "폭우";
+                        today_text.setText(rainfall);
+                        if(sky.equals("맑음")){
+                            today_img.setImageResource(R.drawable.weather13);
+                        }
+                        else if(sky.equals("구름조금")){
+                            today_img.setImageResource(R.drawable.weather14);
+                        }
+                        else if(sky.equals("구름많음")){
+                            today_img.setImageResource(R.drawable.weather15);
+                        }
+                        else {
+                            today_img.setImageResource(R.drawable.weather16);
+                        }
                     }
-                    else if(sky.equals("구름많음")){
-                        today_text.setText(rainfall+"와 "+ sky);
-                        today_img.setImageResource(R.drawable.weather7);
-                    }
+
                     else {
-                        today_text.setText("흐리고 "+rainfall);
-                        today_img.setImageResource(R.drawable.weather8);
+                        rainfall = "";
+                        today_text.setText(sky);
+                        if(sky.equals("맑음")){
+                            today_img.setImageResource(R.drawable.weather1);
+                        }
+                        else if(sky.equals("구름조금")){
+                            today_img.setImageResource(R.drawable.weather2);
+                        }
+                        else if(sky.equals("구름많음")){
+                            today_img.setImageResource(R.drawable.weather3);
+                        }
+                        else {
+                            today_img.setImageResource(R.drawable.weather4);
+                        }
                     }
+
+                    temp_text.setText(weather.get("T1H").toString());
+                    rainfall_text.setText(weather.get("RN1").toString());
+                    parking_text.setText(R.string.parking);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                else if(rainfall.equals("10~19mm") || rainfall.equals("20~39mm") || rainfall.equals("40~69mm")){
-                    rainfall = "비";
-                    today_text.setText(rainfall);
-                    if(sky.equals("맑음")){
-                        today_img.setImageResource(R.drawable.weather9);
-                    }
-                    else if(sky.equals("구름조금")){
-                        today_img.setImageResource(R.drawable.weather10);
-                    }
-                    else if(sky.equals("구름많음")){
-                        today_img.setImageResource(R.drawable.weather11);
-                    }
-                    else {
-                        today_img.setImageResource(R.drawable.weather12);
-                    }
-                }
-
-                else if(rainfall.equals("70mm 이상")){
-                    rainfall = "폭우";
-                    today_text.setText(rainfall);
-                    if(sky.equals("맑음")){
-                        today_img.setImageResource(R.drawable.weather13);
-                    }
-                    else if(sky.equals("구름조금")){
-                        today_img.setImageResource(R.drawable.weather14);
-                    }
-                    else if(sky.equals("구름많음")){
-                        today_img.setImageResource(R.drawable.weather15);
-                    }
-                    else {
-                        today_img.setImageResource(R.drawable.weather16);
-                    }
-                }
-
-                else {
-                    rainfall = "";
-                    today_text.setText(sky);
-                    if(sky.equals("맑음")){
-                        today_img.setImageResource(R.drawable.weather1);
-                    }
-                    else if(sky.equals("구름조금")){
-                        today_img.setImageResource(R.drawable.weather2);
-                    }
-                    else if(sky.equals("구름많음")){
-                        today_img.setImageResource(R.drawable.weather3);
-                    }
-                    else {
-                        today_img.setImageResource(R.drawable.weather4);
-                    }
-                }
-
-                temp_text.setText(weather.get("T1H").toString());
-                rainfall_text.setText(weather.get("RN1").toString());
-                parking_text.setText(R.string.parking);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
     }
+
+    /* 다이얼로그
+    private void DialogSimple(){
+        alt_bld.setMessage(Html.fromHtml("현재 서버 통신이 원활하지 않습니다.<br>다시 시도해주시기 바랍니다."))
+                .setCancelable(false)
+                .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Action for 'Yes' Button
+                        Intent i = new Intent(DetailActivity.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = alt_bld.create();
+        // Title for AlertDialog
+        alert.setTitle("서버 통신 에러");
+        // Icon for AlertDialog
+        alert.setIcon(R.drawable.ic_launcher);
+        alert.show();
+    }
+    */
 
     private class PostPapers extends AsyncTask<String, Void, ArrayList<Paper>> {
 

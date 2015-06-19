@@ -55,10 +55,10 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="20dip"
+                    android:textSize="23dip"
                     android:layout_marginTop="5dip"
                     android:paddingLeft="15dip"
-                    android:paddingTop="16dip"/>
+                    android:paddingTop="14dip"/>
             </LinearLayout>
             <View
                 android:layout_height="2dip"
@@ -82,10 +82,10 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="20dip"
+                    android:textSize="23dip"
                     android:layout_marginTop="5dip"
                     android:paddingLeft="15dip"
-                    android:paddingTop="16dip"/>
+                    android:paddingTop="14dip"/>
             </LinearLayout>
             <View
                 android:layout_height="2dip"
@@ -109,10 +109,10 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="20dip"
+                    android:textSize="23dip"
                     android:layout_marginTop="5dip"
                     android:paddingLeft="15dip"
-                    android:paddingTop="16dip"/>
+                    android:paddingTop="14dip"/>
             </LinearLayout>
             <View
                 android:layout_height="2dip"
@@ -136,10 +136,10 @@
                     android:layout_width="fill_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="20dip"
+                    android:textSize="23dip"
                     android:layout_marginTop="5dip"
                     android:paddingLeft="15dip"
-                    android:paddingTop="16dip"/>
+                    android:paddingTop="14dip"/>
             </LinearLayout>
             <View
                 android:layout_height="2dip"
@@ -169,7 +169,7 @@
                     android:paddingLeft="15dip"
                     android:layout_marginTop="5dip"
                     android:imeOptions="actionSend"
-                    android:textSize="20dip"
+                    android:textSize="23dip"
                     android:inputType="text"/>
                 <Button
                     android:id="@+id/comment_send_btn"

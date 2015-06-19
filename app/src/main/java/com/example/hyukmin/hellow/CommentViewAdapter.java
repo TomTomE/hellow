@@ -42,7 +42,7 @@ public class CommentViewAdapter extends ArrayAdapter<Paper> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Paper paper = papers.get(position);
-        Typeface tf = Typeface.createFromAsset(context.getAssets(), "InterparkGothicBold.ttf");
+        Typeface tf = Typeface.createFromAsset(context.getAssets(), "InterparkGothicLight.ttf");
 
         if (view == null) {
             Log.d(DEBUG_TAG_VIEW, "create View");
