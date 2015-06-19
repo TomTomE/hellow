@@ -191,13 +191,19 @@
     <ListView
         android:id="@+id/comment_LV"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@color/divider_color"
         android:dividerHeight="2dip"
         android:clickable="false"
         android:listSelector="@android:color/transparent">
     </ListView>
+    <ViewStub
+        android:id = "@android:id/empty"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout = "@layout/empty_list"
+        android:layout_weight="1"/>
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView1"
         android:layout_width="wrap_content"
