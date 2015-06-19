@@ -1,6 +1,8 @@
 package com.example.hyukmin.hellow;
 
 import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 
 /**
  * Created by baesangjoon on 15. 6. 4..
@@ -105,4 +108,6 @@ public class BaseActivity extends Activity{
                 setGlobalFont((ViewGroup)child);
         }
     }
+
+
 }

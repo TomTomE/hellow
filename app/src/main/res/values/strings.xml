@@ -17,4 +17,11 @@
     <color name="divider_color">#EAEAEA</color>
     <!--<color name="divider_color">#343838</color>-->
     <color name="blue">#0070d6</color>
+
+
+    <string name="string_list_board_count_prompt">조회 %1$d/댓글 %2$d</string>
+    <string name="string_second_before_prompt">%1$d초 전</string>
+    <string name="string_minute_before_prompt">%1$d분 전</string>
+    <string name="string_hour_before_prompt">%1$d시간 전</string>
+    <string name="string_day_before_prompt">%1$d.%2$d.%3$d</string>
 </resources>
