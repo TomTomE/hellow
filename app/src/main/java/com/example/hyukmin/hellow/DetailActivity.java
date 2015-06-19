@@ -3,6 +3,7 @@ package com.example.hyukmin.hellow;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -110,6 +111,10 @@ public class DetailActivity extends BaseActivity {
         adapter = new CommentViewAdapter(this, papers, R.layout.comment_list);
         comment_LV = (ListView)findViewById(R.id.comment_LV);
         comment_LV.setAdapter(adapter);
+        comment_LV.setEmptyView(findViewById(android.R.id.empty));
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf"); //폰트 적용
+        TextView empty_TV = (TextView) findViewById(R.id.empty_TV);
+        empty_TV.setTypeface(typeface);
 
         new GetPapers().execute(in.getExtras().get("id").toString());
 
@@ -165,7 +170,7 @@ public class DetailActivity extends BaseActivity {
         Intent i = new Intent(DetailActivity.this, MainActivity.class);
         startActivity(i);
         finish();
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     // 날씨 받아오는 함수

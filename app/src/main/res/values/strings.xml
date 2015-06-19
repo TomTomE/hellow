@@ -8,6 +8,7 @@
     <string name="parking">주차장 사용가능</string>
     <string name="parking_no">주차장 사용불가</string>
     <string name="banner_ad_unit_id">ca-app-pub-3500224505443578/4073673241</string>
+    <string name="no_comment">현재 등록된 댓글이 없습니다.</string>
 
     <color name="splash_back">#00DFFC</color>
     <color name="splash_back1">#00B4CC</color>
