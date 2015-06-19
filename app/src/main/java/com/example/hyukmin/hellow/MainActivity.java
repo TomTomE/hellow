@@ -32,30 +32,6 @@ import com.google.android.gms.ads.AdView;
 
 
 public class MainActivity extends BaseActivity {
-    Integer[] imageId = {
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7,
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7,
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7
-
-    };
 
     private ListviewAdapter adapter;
     private ListView list;
@@ -249,6 +225,7 @@ public class MainActivity extends BaseActivity {
                 in.putExtra("title", temp._name);
 
                 startActivity(in);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 //finish();
             }
         });
@@ -290,6 +267,8 @@ public class MainActivity extends BaseActivity {
             try {
                 //String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/beach/" + ((params.length != 0) ? params[0] : "");
                 //String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/beach/경포";
+
+
                 String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
                         "/beach/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
                 Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);

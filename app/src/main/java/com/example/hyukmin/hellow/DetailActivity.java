@@ -23,6 +23,8 @@ import com.google.android.gms.ads.AdView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /*
@@ -38,55 +40,14 @@ public class DetailActivity extends BaseActivity {
     private InputMethodManager mInputMethodManager;
     private EditText key_send_btn;
 
-    public String[] weatherName = {
-            "맑음",
-            "태풍1",
-            "여우비",
-            "태풍2",
-            "태풍3",
-            "여우비",
-            "여우비",
-            "맑음",
-            "맑음",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20"
+    private TextView temp_text; // 오늘의 기온 텍스트
+    private ImageView today_img; // 오늘의 날씨 이미지
+    private TextView today_text; // 오늘의 날씨 텍스트
+    private TextView rainfall_text; // 오늘의 강수량 텍스트
+    private TextView parking_text; // 주차가능 여부 텍스트
 
-    };
-
-    Integer[] weatherImage = {
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7,
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7,
-            R.drawable.image1,
-            R.drawable.image2,
-            R.drawable.image3,
-            R.drawable.image4,
-            R.drawable.image5,
-            R.drawable.image6,
-            R.drawable.image7
-
-    };
+    private long backKeyPressedTime = 0;
+    private Toast toast;
 
     public String[] comment_list = {
             "거기 날씨 어때요?",
@@ -133,6 +94,7 @@ public class DetailActivity extends BaseActivity {
         in = getIntent();
 
         // 서버 통신
+        new GetWeather().execute(in.getExtras().get("id").toString());
 
 
 
@@ -182,8 +144,8 @@ public class DetailActivity extends BaseActivity {
         key_send_btn.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEND || event.getKeyCode() == KeyEvent.KEYCODE_ENTER){
-                    Log.d("SEND","-------ok-----------");
+                if (actionId == EditorInfo.IME_ACTION_SEND || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    Log.d("SEND", "-------ok-----------");
                     // 내용 전송 처리
 
                     new PostPapers().execute(in.getExtras().get("id").toString(), key_send_btn.getText().toString());
@@ -208,12 +170,127 @@ public class DetailActivity extends BaseActivity {
 
     }
 
-    // 뒤로가기 버튼 눌렀을 경우 - 한 번 클릭시 페이지 리프레쉬하고 두 번 클릭시 메인페이지로 이동
+    // 뒤로가기 버튼 눌렀을 경우 - 클릭시 메인페이지로 이동
     public void onBackPressed() {
         Intent i = new Intent(DetailActivity.this, MainActivity.class);
         startActivity(i);
         finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    // 날씨 받아오는 함수
+    private class GetWeather extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            JSONObject weather = new JSONObject();
+            try {
+                String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
+                        "/beaches/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
+                Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
+                String result = GetHttpResponseString(strUrl, false, null);
+                Log.d(DEBUG_TAG_HTTP, "String result : " + result);
+                weather = new JSONObject(result);
+
+            } catch (JSONException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return weather;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            try {
+                JSONObject weather = (JSONObject) jsonObject.get("weather");
+
+                // 오늘 날씨, 기온, 강수량, 주차가능
+                temp_text = (TextView) findViewById(R.id.temp_text);
+                today_text = (TextView) findViewById(R.id.today_text);
+                rainfall_text = (TextView) findViewById(R.id.rainfall_text);
+                parking_text = (TextView) findViewById(R.id.parking_text);
+                today_img = (ImageView) findViewById(R.id.today_img);
+
+                String rainfall = weather.get("RN1").toString();
+                String sky = weather.get("SKY").toString();
+                if(rainfall.equals("1mm 미만") || rainfall.equals("1~4mm") || rainfall.equals("5~9mm")){
+                    rainfall = "얕은 비";
+                    if(sky.equals("맑음")){
+                        today_text.setText(rainfall);
+                        today_img.setImageResource(R.drawable.weather5);
+                    }
+                    else if(sky.equals("구름조금")){
+                        today_text.setText(rainfall+"와 "+sky);
+                        today_img.setImageResource(R.drawable.weather6);
+                    }
+                    else if(sky.equals("구름많음")){
+                        today_text.setText(rainfall+"와 "+ sky);
+                        today_img.setImageResource(R.drawable.weather7);
+                    }
+                    else {
+                        today_text.setText("흐리고 "+rainfall);
+                        today_img.setImageResource(R.drawable.weather8);
+                    }
+                }
+
+                else if(rainfall.equals("10~19mm") || rainfall.equals("20~39mm") || rainfall.equals("40~69mm")){
+                    rainfall = "비";
+                    today_text.setText(rainfall);
+                    if(sky.equals("맑음")){
+                        today_img.setImageResource(R.drawable.weather9);
+                    }
+                    else if(sky.equals("구름조금")){
+                        today_img.setImageResource(R.drawable.weather10);
+                    }
+                    else if(sky.equals("구름많음")){
+                        today_img.setImageResource(R.drawable.weather11);
+                    }
+                    else {
+                        today_img.setImageResource(R.drawable.weather12);
+                    }
+                }
+
+                else if(rainfall.equals("70mm 이상")){
+                    rainfall = "폭우";
+                    today_text.setText(rainfall);
+                    if(sky.equals("맑음")){
+                        today_img.setImageResource(R.drawable.weather13);
+                    }
+                    else if(sky.equals("구름조금")){
+                        today_img.setImageResource(R.drawable.weather14);
+                    }
+                    else if(sky.equals("구름많음")){
+                        today_img.setImageResource(R.drawable.weather15);
+                    }
+                    else {
+                        today_img.setImageResource(R.drawable.weather16);
+                    }
+                }
+
+                else {
+                    rainfall = "";
+                    today_text.setText(sky);
+                    if(sky.equals("맑음")){
+                        today_img.setImageResource(R.drawable.weather1);
+                    }
+                    else if(sky.equals("구름조금")){
+                        today_img.setImageResource(R.drawable.weather2);
+                    }
+                    else if(sky.equals("구름많음")){
+                        today_img.setImageResource(R.drawable.weather3);
+                    }
+                    else {
+                        today_img.setImageResource(R.drawable.weather4);
+                    }
+                }
+
+                temp_text.setText(weather.get("T1H").toString());
+                rainfall_text.setText(weather.get("RN1").toString());
+                parking_text.setText(R.string.parking);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class PostPapers extends AsyncTask<String, Void, ArrayList<Paper>> {
