@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -93,28 +94,17 @@ public class DetailActivity extends BaseActivity {
 
         in = getIntent();
 
-        // 서버 통신
-        new GetWeather().execute(in.getExtras().get("id").toString());
-
-
+        temp_text = (TextView) findViewById(R.id.temp_text);
+        today_text = (TextView) findViewById(R.id.today_text);
+        rainfall_text = (TextView) findViewById(R.id.rainfall_text);
+        parking_text = (TextView) findViewById(R.id.parking_text);
+        today_img = (ImageView) findViewById(R.id.today_img);
 
         // Header에 이름(임시)
-
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText((CharSequence) in.getExtras().get("title"));
 
-        // 오늘 날씨, 기온, 강수량, 주차가능
-        TextView temp_text = (TextView) findViewById(R.id.temp_text);
-        ImageView today_img = (ImageView) findViewById(R.id.today_img);
-        TextView today_text = (TextView) findViewById(R.id.today_text);
-        TextView rainfall_text = (TextView) findViewById(R.id.rainfall_text);
-        TextView parking_text = (TextView) findViewById(R.id.parking_text);
-
-        today_img.setImageResource(R.drawable.image3);
-        today_text.setText(R.string.today_weather);
-        temp_text.setText("29" + "℃");
-        rainfall_text.setText("120" + "mm");
-        parking_text.setText(R.string.parking);
+        new GetWeather().execute(in.getExtras().get("id").toString());
 
         // 댓글 작업(임시)
         adapter = new CommentViewAdapter(this, papers, R.layout.comment_list);
@@ -204,11 +194,6 @@ public class DetailActivity extends BaseActivity {
                 JSONObject weather = (JSONObject) jsonObject.get("weather");
 
                 // 오늘 날씨, 기온, 강수량, 주차가능
-                temp_text = (TextView) findViewById(R.id.temp_text);
-                today_text = (TextView) findViewById(R.id.today_text);
-                rainfall_text = (TextView) findViewById(R.id.rainfall_text);
-                parking_text = (TextView) findViewById(R.id.parking_text);
-                today_img = (ImageView) findViewById(R.id.today_img);
 
                 String rainfall = weather.get("RN1").toString();
                 String sky = weather.get("SKY").toString();
