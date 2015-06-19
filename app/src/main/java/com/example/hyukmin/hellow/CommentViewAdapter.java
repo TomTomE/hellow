@@ -16,21 +16,44 @@ import java.util.Random;
 /**
  * Created by hyukmmin on 2015-06-05.
  */
-public class CommentViewAdapter extends ArrayAdapter<String> {
-
+public class CommentViewAdapter extends ArrayAdapter<Paper> {
     private final Activity context;
-    private final String[] comment_list;
-    private final Integer[] comment_Img;
-    public CommentViewAdapter(Activity context, String[] comment_list, Integer[] comment_Img) {
+    private ArrayList<Paper> papers;
+    private final int rowResourceID;
+    public static final String DEBUG_TAG_VIEW = "DEBUG_TAG_VIEW";
 
-        super(context, R.layout.comment_list, comment_list);
+    public CommentViewAdapter(Activity context, ArrayList<Paper> papers, int rowResourceID) {
+
+        super(context, rowResourceID, papers);
         this.context = context;
-        this.comment_list = comment_list;
-        this.comment_Img = comment_Img;
-
+        this.papers = papers;
+        this.rowResourceID = rowResourceID;
     }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        Paper paper = papers.get(position);
+        Typeface tf = Typeface.createFromAsset(context.getAssets(), "InterparkGothicBold.ttf");
+
+        if (view == null) {
+            Log.d(DEBUG_TAG_VIEW, "create View");
+            LayoutInflater inflater = context.getLayoutInflater();
+            view = inflater.inflate(this.rowResourceID, parent, false);
+        }
+
+        TextView content = ViewHolderHelper.get(view, R.id.comment_list_text);
+        TextView date = ViewHolderHelper.get(view, R.id.comment_text_date);
+        ImageView image = ViewHolderHelper.get(view, R.id.comment_list_img);
+
+        content.setTypeface(tf);
+        date.setTypeface(tf);
+        Log.d(DEBUG_TAG_VIEW, "getView");
+        content.setText(paper.contents);
+        date.setText(paper.date);
+
+        return view;
+
+        /*
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.comment_list, null, true);
 
@@ -38,6 +61,9 @@ public class CommentViewAdapter extends ArrayAdapter<String> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.comment_list_img);
         TextView txtDate = (TextView) rowView.findViewById(R.id.comment_text_date);
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "InterparkGothicBold.ttf");
+        */
+
+
 
         /*
         Random ran = new Random();
@@ -51,6 +77,7 @@ public class CommentViewAdapter extends ArrayAdapter<String> {
         }
         */
 
+        /*
         txtTitle.setTypeface(typeface);
         txtDate.setTypeface(typeface);
 
@@ -58,6 +85,12 @@ public class CommentViewAdapter extends ArrayAdapter<String> {
         Log.d("comment_Img[position]", ""+comment_Img[position]);
         imageView.setImageResource(comment_Img[position]);
         txtDate.setText("2015/06/07");
-        return rowView;
+
+        */
+
+
+
     }
+
+
 }

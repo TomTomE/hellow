@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO Holder Pattern 적용할것.
 public class ListviewAdapter extends ArrayAdapter<Beach> {
 
     private final Context context;

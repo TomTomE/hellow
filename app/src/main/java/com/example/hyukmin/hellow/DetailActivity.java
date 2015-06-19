@@ -1,54 +1,42 @@
 package com.example.hyukmin.hellow;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 
 /*
  * Created by hyukmmin on 2015-06-01.
  */
 public class DetailActivity extends BaseActivity {
+    Intent in = null;
 
     private ListView comment_LV;
+    private ArrayList<Paper> papers = new ArrayList<>();
+    private CommentViewAdapter adapter;
+
     private InputMethodManager mInputMethodManager;
     private EditText key_send_btn;
-
-    private long backKeyPressedTime = 0;
-    private Toast toast;
 
     public String[] weatherName = {
             "맑음",
@@ -142,14 +130,16 @@ public class DetailActivity extends BaseActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
+        in = getIntent();
+
         // 서버 통신
 
 
 
         // Header에 이름(임시)
-        Intent in = getIntent();
+
         TextView title = (TextView) findViewById(R.id.detail_title);
-        title.setText((CharSequence) in.getExtras().get("id"));
+        title.setText((CharSequence) in.getExtras().get("title"));
 
         // 오늘 날씨, 기온, 강수량, 주차가능
         TextView temp_text = (TextView) findViewById(R.id.temp_text);
@@ -165,9 +155,11 @@ public class DetailActivity extends BaseActivity {
         parking_text.setText(R.string.parking);
 
         // 댓글 작업(임시)
-        CommentViewAdapter adapter = new CommentViewAdapter(DetailActivity.this, comment_list, comment_Img);
+        adapter = new CommentViewAdapter(this, papers, R.layout.comment_list);
         comment_LV = (ListView)findViewById(R.id.comment_LV);
         comment_LV.setAdapter(adapter);
+
+        new GetPapers().execute(in.getExtras().get("id").toString());
 
         mInputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         key_send_btn = (EditText) findViewById(R.id.comment_input);
@@ -194,7 +186,7 @@ public class DetailActivity extends BaseActivity {
                     Log.d("SEND","-------ok-----------");
                     // 내용 전송 처리
 
-                    new PostPapers().execute("test");
+                    new PostPapers().execute(in.getExtras().get("id").toString(), key_send_btn.getText().toString());
 
                     // 전송 후 처리
                     key_send_btn.setText(null);
@@ -224,8 +216,7 @@ public class DetailActivity extends BaseActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    private class PostPapers extends AsyncTask<String, Void, JSONObject> {
-
+    private class PostPapers extends AsyncTask<String, Void, ArrayList<Paper>> {
 
         /**
          * Override this method to perform a computation on a background thread. The
@@ -242,12 +233,11 @@ public class DetailActivity extends BaseActivity {
          * @see #publishProgress
          */
         @Override
-        protected JSONObject doInBackground(String... params) {
+        protected ArrayList<Paper> doInBackground(String... params) {
             JSONObject body = new JSONObject();
             try {
-                body.put("boardId", "PAC2014091312140000102");
-                body.put("contents", "TEST");
-                body.put("pswd", "0000");
+                body.put("boardId", params[0]);
+                body.put("contents", params[1]);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -256,13 +246,13 @@ public class DetailActivity extends BaseActivity {
             String result = GetHttpResponseString(strUrl, true, body);
             Log.d(DEBUG_TAG_HTTP, "String result : " + result);
 
-
             try {
-                body = new JSONObject(result);
+                JSONObject obj = new JSONObject(result);
+                papers = Paper.fromJSON(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return body;
+            return papers;
         }
 
         /**
@@ -277,12 +267,24 @@ public class DetailActivity extends BaseActivity {
          * @see #onCancelled(Object)
          */
         @Override
-        protected void onPostExecute(JSONObject object) {
+        protected void onPostExecute(ArrayList<Paper> object) {
             super.onPostExecute(object);
+
+            adapter.clear();
+
+            adapter.addAll(papers);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(DEBUG_TAG_HTTP, "Runnable Called");
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 
-    private class GetPapers extends AsyncTask<String, Void, JSONObject> {
+    private class GetPapers extends AsyncTask<String, Void, ArrayList<Paper>> {
         /**
          * Override this method to perform a computation on a background thread. The
          * specified parameters are the parameters passed to {@link #execute}
@@ -298,26 +300,47 @@ public class DetailActivity extends BaseActivity {
          * @see #publishProgress
          */
         @Override
-        protected JSONObject doInBackground(String... params) {
-            JSONObject body = new JSONObject();
-            try {
-                body.put("boardId", "PAC2014091312140000102");
-                body.put("contents", "TEST");
-                body.put("pswd", "0000");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/chat/";
+        protected ArrayList<Paper> doInBackground(String... params) {
+            String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT + "/chat/" + params[0];
             Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
-            String result = GetHttpResponseString(strUrl, true, body);
+            String result = GetHttpResponseString(strUrl, false, null);
             Log.d(DEBUG_TAG_HTTP, "String result : " + result);
 
+
             try {
-                body = new JSONObject(result);
+                JSONObject obj = new JSONObject(result);
+                papers = Paper.fromJSON(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return body;
+            return papers;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param papers The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(ArrayList<Paper> papers) {
+            super.onPostExecute(papers);
+            adapter.clear();
+
+            adapter.addAll(papers);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(DEBUG_TAG_HTTP, "Runnable Called");
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

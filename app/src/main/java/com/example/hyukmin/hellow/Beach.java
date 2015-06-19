@@ -28,7 +28,7 @@ public class Beach {
     }
 
     public static ArrayList<Beach> fromJSON(JSONArray jsonObjects) {
-        ArrayList<Beach> beaches = new ArrayList<Beach>();
+        ArrayList<Beach> beaches = new ArrayList<>();
         for (int i = 0; i < jsonObjects.length(); i++) {
             try {
                 beaches.add(new Beach(jsonObjects.getJSONObject(i)));

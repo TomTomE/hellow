@@ -57,12 +57,6 @@ public class MainActivity extends BaseActivity {
 
     };
 
-    private static final String DEBUG_TAG_HTTP = "HTTP - Beach List";
-    private static final String DEBUG_TAG_SEARCH = "Search - Beach List";
-
-    private static final String SERVER_IP = "14.50.109.225";
-    private static final String SERVER_PORT = "9000";
-
     private ListviewAdapter adapter;
     private ListView list;
     private ArrayList<Beach> beachList = new ArrayList<>();
@@ -84,13 +78,18 @@ public class MainActivity extends BaseActivity {
 
         EditText searchBeach = (EditText) findViewById(R.id.search_beach);
 
+        //리스트뷰
         list = (ListView)findViewById(R.id.beach_LV);
+
         adapter = new ListviewAdapter(this, beachList, R.layout.beach_list);
         list.setAdapter(adapter);
 
         Log.d(DEBUG_TAG_SEARCH, "Listview generated");
 
+
         new GetBeachList().execute();
+
+
 
         searchBeach.addTextChangedListener(new TextWatcher() {
             @Override
@@ -245,7 +244,9 @@ public class MainActivity extends BaseActivity {
                 Intent in = new Intent(MainActivity.this, DetailActivity.class);
 
                 Beach temp = adapter.getItem(position);
+
                 in.putExtra("id", temp._id);
+                in.putExtra("title", temp._name);
 
                 startActivity(in);
                 //finish();
@@ -292,7 +293,9 @@ public class MainActivity extends BaseActivity {
                 String strUrl = "http://" + SERVER_IP + ":" + SERVER_PORT +
                         "/beach/" + ((params.length != 0) ? URLEncoder.encode(params[0], "UTF-8") : "");
                 Log.d(DEBUG_TAG_HTTP, "URL result : " + strUrl);
+
                 String result = GetHttpResponseString(strUrl, false, null);
+
                 Log.d(DEBUG_TAG_HTTP, "String result : " + result);
 
                 beachList = Beach.fromJSON(new JSONArray(result));
@@ -317,21 +320,7 @@ public class MainActivity extends BaseActivity {
         @Override
         protected void onPostExecute(ArrayList<Beach> beachList) {
             super.onPostExecute(beachList);
-
             setListBy(beachList);
-            /*
-            String[] baechList = new String[beachList.length()];
-            JSONObject tmp =null;
-            for (int i = 0; i < jsonArray.length(); i++) {
-                try {
-                    baechList[i] = (String) jsonArray.getJSONObject(i).get("_name");
-                    Log.d(DEBUG_TAG_HTTP, "BeachList  : " + baechList[i]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            setListBy(beachList);
-            */
         }
 
         private ArrayList<Beach> loadBeachList(String... param) throws IOException, JSONException {
