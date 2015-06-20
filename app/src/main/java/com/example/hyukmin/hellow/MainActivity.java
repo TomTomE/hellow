@@ -1,10 +1,14 @@
 package com.example.hyukmin.hellow;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -36,6 +41,7 @@ public class MainActivity extends BaseActivity {
     private ListviewAdapter adapter;
     private ListView list;
     private ArrayList<Beach> beachList = new ArrayList<>();
+    private AlertDialog.Builder alt_bulid;
 
     private long backKeyPressedTime = 0;
     private Toast toast;
@@ -51,6 +57,10 @@ public class MainActivity extends BaseActivity {
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        TextView mainTitle = (TextView) findViewById(R.id.main_title);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf"); //폰트 적용
+        mainTitle.setTypeface(typeface); //폰트 적용
 
         EditText searchBeach = (EditText) findViewById(R.id.search_beach);
 
@@ -246,6 +256,12 @@ public class MainActivity extends BaseActivity {
          * @see #onCancelled(Object)
          */
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            alt_bulid = new AlertDialog.Builder(MainActivity.this);
+        }
+
         /**
          * Override this method to perform a computation on a background thread. The
          * specified parameters are the parameters passed to {@link #execute}
@@ -260,6 +276,8 @@ public class MainActivity extends BaseActivity {
          * @see #onPostExecute
          * @see #publishProgress
          */
+
+
         @Override
         protected ArrayList<Beach> doInBackground(String... params) {
             //TODO params 안들어올경우 어떻게 되는지 확인.
@@ -276,9 +294,9 @@ public class MainActivity extends BaseActivity {
                 String result = GetHttpResponseString(strUrl, false, null);
 
                 Log.d(DEBUG_TAG_HTTP, "String result : " + result);
-
-                beachList = Beach.fromJSON(new JSONArray(result));
-
+                if(result != null){
+                    beachList = Beach.fromJSON(new JSONArray(result));
+                }
             } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -299,7 +317,26 @@ public class MainActivity extends BaseActivity {
         @Override
         protected void onPostExecute(ArrayList<Beach> beachList) {
             super.onPostExecute(beachList);
-            setListBy(beachList);
+            if(beachList.size() == 0){
+                alt_bulid.setMessage(Html.fromHtml("현재 서버 통신이 원활하지 않습니다.<br>다시 시도해주시기 바랍니다."))
+                        .setCancelable(false)
+                        .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Action for 'Yes' Button
+                                dialog.dismiss();
+                                MainActivity.this.finish();
+                            }
+                        });
+                AlertDialog alert = alt_bulid.create();
+                // Title for AlertDialog
+                alert.setTitle("서버 통신 에러");
+                // Icon for AlertDialog
+                alert.setIcon(R.drawable.ic_launcher);
+                alert.show();
+            }
+            else {
+                setListBy(beachList);
+            }
         }
 
         private ArrayList<Beach> loadBeachList(String... param) throws IOException, JSONException {

@@ -93,7 +93,7 @@ public class BaseActivity extends Activity{
         super.setContentView(layoutResID);
 
         if (BaseActivity.mTypeface == null)
-            BaseActivity.mTypeface = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf");
+            BaseActivity.mTypeface = Typeface.createFromAsset(getAssets(), "InterparkGothicLight.ttf");
 
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         setGlobalFont(root);

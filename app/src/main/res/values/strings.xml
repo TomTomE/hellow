@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Beach Weather</string>
+    <string name="app_name">BeWEATHER</string>
     <string name="action_settings">action_settings</string>
     <string name="detail">detail</string>
     <string name="logo_text">BeWEATHER</string>
@@ -8,6 +8,7 @@
     <string name="parking">주차장 사용가능</string>
     <string name="parking_no">주차장 사용불가</string>
     <string name="banner_ad_unit_id">ca-app-pub-3500224505443578/4073673241</string>
+    <!--<string name="banner_ad_unit_id">ca-app-pub-3500224505443578/7956339245</string>-->
     <string name="no_comment">현재 등록된 댓글이 없습니다.</string>
 
     <color name="splash_back">#00DFFC</color>

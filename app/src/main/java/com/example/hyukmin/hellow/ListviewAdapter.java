@@ -65,7 +65,7 @@ public class ListviewAdapter extends ArrayAdapter<Beach> {
         if (item != null) {
             TextView txtTitle = (TextView) view.findViewById(R.id.beach_list_text);
             //ImageView imageView = (ImageView) view.findViewById(R.id.beach_list_img);
-            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "InterparkGothicMedium.ttf"); //폰트 적용
+            Typeface typeface = Typeface.createFromAsset(context.getAssets(), "InterparkGothicLight.ttf"); //폰트 적용
             if(txtTitle != null) {
                 txtTitle.setTypeface(typeface); //폰트 적용
                 txtTitle.setText(item._name);
