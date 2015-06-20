@@ -64,41 +64,6 @@ public class CommentViewAdapter extends ArrayAdapter<Paper> {
 
 
         return view;
-
-        /*
-        LayoutInflater inflater = context.getLayoutInflater();
-        View rowView= inflater.inflate(R.layout.comment_list, null, true);
-
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.comment_list_text);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.comment_list_img);
-        TextView txtDate = (TextView) rowView.findViewById(R.id.comment_text_date);
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "InterparkGothicBold.ttf");
-        */
-
-
-
-        /*
-        Random ran = new Random();
-        // 댓글 수만큼 이미지 리스트 랜덤 구성
-        for (int i = 0; i<=comment_Img.length;i++){
-
-            while (0<=comment_list.length) {
-                Integer index = (Integer) ran(comment_Img.hashCode());
-                Integer ran_img = (Integer) comment_Img[index];
-            }
-        }
-        */
-
-        /*
-        txtTitle.setTypeface(typeface);
-        txtDate.setTypeface(typeface);
-
-        txtTitle.setText(comment_list[position]);
-        Log.d("comment_Img[position]", ""+comment_Img[position]);
-        imageView.setImageResource(comment_Img[position]);
-        txtDate.setText("2015/06/07");
-
-        */
     }
 
     public static String calculateDate(Context context, String strDate) {

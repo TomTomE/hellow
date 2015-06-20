@@ -95,9 +95,6 @@ public class DetailActivity extends BaseActivity {
         TextView detailTitle = (TextView) findViewById(R.id.detail_title);
         Typeface typeface_b = Typeface.createFromAsset(getAssets(), "InterparkGothicBold.ttf"); //폰트 적용
         detailTitle.setTypeface(typeface_b); //폰트 적용
-        TextView commentDate = (TextView) findViewById(R.id.comment_text_date);
-        Typeface typeface_m = Typeface.createFromAsset(getAssets(), "InterparkGothicMedium.ttf"); //폰트 적용
-        commentDate.setTypeface(typeface_m); //폰트 적용
 
         mInputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         key_send_btn = (EditText) findViewById(R.id.comment_input);
@@ -143,23 +140,15 @@ public class DetailActivity extends BaseActivity {
                 return false;
             }
         });
-
-        /*
-        comment_LV.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                sv.requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
-        */
-
-
     }
 
 
     // 뒤로가기 버튼 눌렀을 경우 - 클릭시 메인페이지로 이동
     public void onBackPressed() {
+        //refresh timer 종료
+        timer.cancel();
+        timer = null;
+
         Intent i = new Intent(DetailActivity.this, MainActivity.class);
         startActivity(i);
         finish();
