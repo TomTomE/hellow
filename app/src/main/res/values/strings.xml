@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">BeWEATHER</string>
+    <string name="app_name">BeachCHAT</string>
     <string name="action_settings">action_settings</string>
     <string name="detail">detail</string>
-    <string name="logo_text">BeWEATHER</string>
+    <string name="logo_text">BeachCHAT</string>
     <string name="today_weather">맑음</string>
     <string name="send">ON</string>
     <string name="parking">주차장 사용가능</string>

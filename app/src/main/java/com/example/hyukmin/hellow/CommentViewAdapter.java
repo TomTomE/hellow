@@ -59,6 +59,7 @@ public class CommentViewAdapter extends ArrayAdapter<Paper> {
         Log.d(DEBUG_TAG_VIEW, "getView");
         content.setText(paper.contents);
         date.setText(paper.date);
+        image.setImageResource(R.drawable.user);
 
         date.setText(calculateDate(context, paper.date));
 
