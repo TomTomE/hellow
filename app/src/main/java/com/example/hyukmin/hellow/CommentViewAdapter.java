@@ -101,9 +101,9 @@ public class CommentViewAdapter extends ArrayAdapter<Paper> {
         String message = null;//String.format(msgPrompt, green_fee_min_value, green_fee_max_value);
 
         if(gapSec < 0) {
-            Log.d("", "");
+            message = "지금";
         }
-        if(gapSec >= 0 && gapSec < 60) {
+        else if(gapSec >= 0 && gapSec < 60) {
             String msgPrompt = context.getString(R.string.string_second_before_prompt);
             message = String.format(msgPrompt, gapSec);
         }

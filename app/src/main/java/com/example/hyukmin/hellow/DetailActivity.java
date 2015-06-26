@@ -128,14 +128,13 @@ public class DetailActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    Log.d("SEND", "-------ok-----------");
-                    // 내용 전송 처리
+                    if (!key_send_btn.getText().toString().trim().equals("")) {
+                        new PostPapers().execute(in.getExtras().get("id").toString(), key_send_btn.getText().toString());
 
-                    new PostPapers().execute(in.getExtras().get("id").toString(), key_send_btn.getText().toString());
-
-                    // 전송 후 처리
-                    key_send_btn.setText(null);
-                    mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0); // 키보드 내리기
+                        // 전송 후 처리
+                        key_send_btn.setText(null);
+                        mInputMethodManager.hideSoftInputFromWindow(key_send_btn.getWindowToken(), 0); // 키보드 내리기
+                    }
                 }
                 return false;
             }
@@ -146,8 +145,10 @@ public class DetailActivity extends BaseActivity {
     // 뒤로가기 버튼 눌렀을 경우 - 클릭시 메인페이지로 이동
     public void onBackPressed() {
         //refresh timer 종료
-        timer.cancel();
-        timer = null;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
 
         Intent i = new Intent(DetailActivity.this, MainActivity.class);
         startActivity(i);
